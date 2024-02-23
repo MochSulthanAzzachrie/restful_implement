@@ -17,7 +17,7 @@ class CommentOwner
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = Auth::user();
+        $user = auth()->user();
         $comment = Comment::where('id', $request->id)->where('user_id', $user->id)->first();
 
         if (!$comment) {

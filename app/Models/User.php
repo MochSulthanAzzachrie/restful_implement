@@ -66,14 +66,8 @@ class User extends Authenticatable implements JWTSubject
         return $user;
     }
 
-    public static function createUser(Request $request) {
-        $validated = $request->validate([
-            'email' => 'required',
-            'username' => 'required|max:225',
-            'password' => 'required',
-            'firstname' => 'nullable',
-            'lastname' => 'nullable',
-        ]);
+    public static function createUser(Request $request)
+    {
 
         $user = User::create($request->all());
 
@@ -82,13 +76,6 @@ class User extends Authenticatable implements JWTSubject
 
     public static function editUser(Request $request, $id)
     {
-        $validated = $request->validate([
-            'email' => 'nullable',
-            'username' => 'nullable|max:225',
-            'password' => 'nullable',
-            'firstname' => 'nullable',
-            'lastname' => 'nullable',
-        ]);
 
         $user = User::find($id);
         $user->update($request->all());
@@ -105,17 +92,6 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public static function authRegister() {
-        $validator = Validator::make(request()->all(), [
-            'email' => 'required|email|unique:users',
-            'username' => 'required|max:225',
-            'password' => 'required',
-            'firstname' => 'nullable',
-            'lastname' => 'nullable',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->messages());
-        }
 
         $user = User::create([
             'email' => request('email'),

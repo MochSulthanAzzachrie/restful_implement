@@ -26,7 +26,7 @@ class Post extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function writer(): BelongsTo
+    public function users(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
@@ -57,10 +57,6 @@ class Post extends Model
 
     public static function createPost(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|max:225',
-            'novel_content' => 'required',
-        ]);
 
         $request['user_id'] = Auth::user()->id;
         $post = Post::create($request->all());
@@ -70,10 +66,6 @@ class Post extends Model
 
     public static function editPost(Request $request, $id)
     {
-        $validated = $request->validate([
-            'title' => 'nullable|max:225',
-            'novel_content' => 'nullable',
-        ]);
 
         $post = Post::find($id);
         $post->update($request->all());

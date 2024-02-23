@@ -23,21 +23,22 @@ use App\Http\Controllers\AuthenticationController;
 //     return $request->user();
 // });
 
-Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
-    Route::post('register', [AuthenticationController::class, 'register']);
-    Route::post('login', [AuthenticationController::class, 'login']);
-    Route::post('logout', [AuthenticationController::class, 'logout']);
-    Route::post('refresh', [AuthenticationController::class, 'refresh']);
-    Route::post('me', [AuthenticationController::class, 'me']);
+Route::group(['middleware' => 'api'], function ($router) {
+    Route::post('auth/logout', [AuthenticationController::class, 'logout']);
+    Route::post('auth/refresh', [AuthenticationController::class, 'refresh']);
+    Route::post('auth/me', [AuthenticationController::class, 'me']);
 
-    Route::apiResource('/post', PostController::class, ['except' => ['update', 'destroy']]);
+    Route::apiResource('/posts', PostController::class, ['except' => ['update', 'destroy']]);
     Route::apiResource('/posts', PostController::class, ['only' => ['update', 'destroy']])->parameter('posts', 'id')->middleware('post_owner');
 
-    Route::post('/comment', [CommentController::class, 'store']);
     Route::apiResource('/comments', CommentController::class, ['only' => ['update', 'destroy']])->parameter('comments', 'id')->middleware('comment_owner');
 
     Route::apiResource('/users', UserController::class)->parameter('users', 'id');
 });
+Route::post('auth/register', [AuthenticationController::class, 'register']);
+Route::post('auth/login', [AuthenticationController::class, 'login']);
 
+Route::post('/comments', [CommentController::class, 'store']);
+
+// Route::apiResource('/users', UserController::class, ['only' => ['index', 'show']]);
 // Route::get('/posts2/{id}', [PostController::class, 'show2']);
-

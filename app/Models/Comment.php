@@ -24,17 +24,13 @@ class Comment extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function commentator(): BelongsTo
+    public function users(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public static function createComment(Request $request)
     {
-        $validated = $request->validate([
-            'post_id' => 'required|exists:posts,id',
-            'comments_content' => 'required',
-        ]);
 
         $request['user_id'] = auth()->user()->id;
 
@@ -45,16 +41,13 @@ class Comment extends Model
 
     public static function editComment(Request $request, $id)
     {
-        $validated = $request->validate([
-            'comments_content' => 'required',
-        ]);
 
         $comment = Comment::find($id);
         $comment->update($request->only('comments_content'));
 
         return $comment;
     }
-    
+
     public static function breakComment($id)
     {
         $comment = Comment::findOrFail($id);

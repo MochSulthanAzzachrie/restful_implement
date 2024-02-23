@@ -18,13 +18,25 @@ class AuthenticationController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:api', ['except' => ['login', 'register']]);
+    // }
 
     public function register()
     {
+        $validator = Validator::make(request()->all(), [
+            'email' => 'required|email|unique:users',
+            'username' => 'required|max:225',
+            'password' => 'required',
+            'firstname' => 'nullable',
+            'lastname' => 'nullable',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->messages());
+        }
+
         $user = User::authRegister();
 
         if ($user) {

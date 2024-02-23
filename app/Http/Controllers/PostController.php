@@ -13,17 +13,23 @@ use Illuminate\Support\Facades\Storage;
 class PostController extends Controller
 {
     //
-    public function __construct()
-    {
-        $this->middleware('auth:api', ['except' => ['index', 'show']]);
-        // $this->middleware('post-owner')->only('update', 'destroy');
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:api', ['except' => ['index', 'show']]);
+    //     $this->middleware('post-owner')->only('update', 'destroy');
+    // }
     public function index()
     {
         $posts = Post::getPosts();
 
         if ($posts) {
-            return response()->json(['data' => $posts]);
+            $response = array(
+                'success' => true,
+                'message' => 'Data successfully found',
+                'data' => $posts,
+            );
+
+            return response()->json($response, 200);
         } else {
             $response = array(
                 'success' => false,
@@ -40,7 +46,13 @@ class PostController extends Controller
         $post = Post::getPostById($id);
 
         if ($post) {
-            return response()->json(['data' => $post]);
+            $response = array(
+                'success' => true,
+                'message' => 'Data successfully found',
+                'data' => $post,
+            );
+
+            return response()->json($response, 200);
         } else {
             $response = array(
                 'success' => false,
@@ -61,10 +73,21 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
+        $validated = $request->validate([
+            'title' => 'required|max:225',
+            'novel_content' => 'required',
+        ]);
+
         $post = Post::createPost($request);
 
         if ($post) {
-            return response()->json(['data' => $post]);
+             $response = array(
+                'success' => true,
+                'message' => 'Created successfully',
+                'data' => $post,
+            );
+
+            return response()->json($response, 201);
         } else {
             $response = array(
                 'success' => false,
@@ -78,10 +101,21 @@ class PostController extends Controller
 
     public function update(Request $request, $id)
     {
+        $validated = $request->validate([
+            'title' => 'nullable|max:225',
+            'novel_content' => 'nullable',
+        ]);
+
         $post = Post::editPost($request, $id);
 
         if ($post) {
-            return response()->json(['data' => $post]);
+            $response = array(
+                'success' => true,
+                'message' => 'Updated successfully',
+                'data' => $post,
+            );
+
+            return response()->json($response, 200);
         } else {
             $response = array(
                 'success' => false,
@@ -98,7 +132,13 @@ class PostController extends Controller
         $post = Post::breakPost($id);
 
         if ($post) {
-            return response()->json(['data' => $post]);
+            $response = array(
+                'success' => true,
+                'message' => 'Deleted successfully',
+                'data' => $post,
+            );
+
+            return response()->json($response, 200);
         } else {
             $response = array(
                 'success' => false,
