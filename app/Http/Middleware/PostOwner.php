@@ -17,11 +17,17 @@ class PostOwner
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $currentUser = Auth::user();
-        $post = Post::findOrFail($request->id);
+        $currentUser = auth()->user();
+        $post = Post::where('id', $request->id)->where('user_id', $currentUser->id)->first();
 
-        if($post->author != $currentUser->id) {
-            return response()->json(['message' => 'data not found'], 404);
+        if (!$post) {
+            $response = array(
+                'success' => false,
+                'message' => 'post not found',
+                'data' => null,
+            );
+
+            return response()->json($response, 404);
         }
 
         // return response()->json($currentUser->id);

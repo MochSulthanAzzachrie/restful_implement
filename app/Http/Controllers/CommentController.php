@@ -9,40 +9,58 @@ use Illuminate\Http\Request;
 class CommentController extends Controller
 {
     //
+    // public function __construct()
+    // {
+    //     $this->middleware('comment-owner')->only('update', 'destroy');
+    // }
     public function store(Request $request)
     {
+        $comment = Comment::createComment($request);
 
-        $validated = $request->validate([
-            'post_id' => 'required|exists:posts,id',
-            'comments_content' => 'required',
-        ]);
+        if($comment) {
+            return response()->json(['data' => $comment]);
+        } else {
+            $response = array(
+                'success' => false,
+                'message' => 'Data not found',
+                'data' => null,
+            );
 
-        $request['user_id'] = auth()->user()->id;
-
-        $comment = Comment::create($request->all());
-
-        // return response()->json($comment->loadMissing(['commentator']));
-        return new CommentResource($comment->loadMissing(['commentator:id,username']));
+            return response()->json($response, 404);
+        }
     }
 
     public function update(Request $request, $id)
     {
+        $comment = Comment::editComment($request, $id);
 
-        $validated = $request->validate([
-            'comments_content' => 'required',
-        ]);
+        if($comment) {
+            return response()->json(['data' => $comment]);
+        } else {
+            $response = array(
+                'success' => false,
+                'message' => 'Data not found',
+                'data' => null,
+            );
 
-        $comment = Comment::findOrFail($id);
-        $comment->update($request->only('comments_content'));
-
-        return new CommentResource($comment->loadMissing(['commentator:id,username']));
+            return response()->json($response, 404);
+        }
     }
 
     public function destroy($id)
     {
-        $comment = Comment::findOrFail($id);
-        $comment->delete();
+        $comment = Comment::breakComment($id);
 
-        return new CommentResource($comment->loadMissing(['commentator:id,username']));
+        if($comment) {
+            return response()->json(['data' => $comment]);
+        } else {
+            $response = array(
+                'success' => false,
+                'message' => 'Data not found',
+                'data' => null,
+            );
+
+            return response()->json($response, 404);
+        }
     }
 }

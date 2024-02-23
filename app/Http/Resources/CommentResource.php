@@ -21,7 +21,7 @@ class CommentResource extends JsonResource
             'user_id' => $this->user_id,
             'commentator' => $this->whenLoaded('commentator'),
             'created_at' => date_format($this->created_at, "Y-m-d H:i:s"),
-            'updated_at' => optional($this->updated_at) -> format( "Y-m-d H:i:s"),
+            // 'updated_at' => optional($this->updated_at) -> format( "Y-m-d H:i:s"),
         ];
     }
 }

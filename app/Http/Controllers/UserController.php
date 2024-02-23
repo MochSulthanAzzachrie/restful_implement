@@ -10,55 +10,92 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
     //
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['store']]);
+    }
     public function index()
     {
-        $users = User::all();
-        return UserResource::collection($users);
-        // return response()->json(['data' => $posts]);
+        $users = User::getUsers();
+
+        if ($users) {
+            return response()->json(['data' => $users]);
+        } else {
+            $response = array(
+                'success' => false,
+                'message' => 'Data not found',
+                'data' => null,
+            );
+
+            return response()->json($response, 404);
+        }
     }
 
     public function show($id)
     {
-        $user = User::findOrFail($id);
-        return new UserResource($user);
+        $user = User::getUserById($id);
+
+        if ($user) {
+            return response()->json(['data' => $user]);
+        } else {
+            $response = array(
+                'success' => false,
+                'message' => 'Data not found',
+                'data' => null,
+            );
+
+            return response()->json($response, 404);
+        }
     }
 
     public function store(Request $request)
     {
+        $user = User::createUser($request);
 
-        $validated = $request->validate([
-            'email' => 'required',
-            'username' => 'required|max:225',
-            'password' => 'required',
-            'firstname' => 'nullable',
-            'lastname' => 'nullable',
-        ]);
+        if ($user) {
+            return response()->json(['data' => $user]);
+        } else {
+            $response = array(
+                'success' => false,
+                'message' => 'Data not found',
+                'data' => null,
+            );
 
-        $user = User::create($request->all());
-        return new UserResource($user);
+            return response()->json($response, 404);
+        }
     }
 
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'email' => 'required',
-            'username' => 'required|max:225',
-            'password' => 'required',
-            'firstname' => 'nullable',
-            'lastname' => 'nullable',
-        ]);
+        $user = User::editUser($request, $id);
 
-        $user = User::findOrFail($id);
-        $user->update($request->all());
+        if ($user) {
+            return response()->json(['data' => $user]);
+        } else {
+            $response = array(
+                'success' => false,
+                'message' => 'Data not found',
+                'data' => null,
+            );
 
-        return new UserResource($user);
+            return response()->json($response, 404);
+        }
     }
 
     public function destroy($id)
     {
-        $user = User::findOrFail($id);
-        $user->delete();
+        $user = User::breakUser($id);
 
-        return new UserResource($user);
+        if ($user) {
+            return response()->json(['data' => $user]);
+        } else {
+            $response = array(
+                'success' => false,
+                'message' => 'Data not found',
+                'data' => null,
+            );
+
+            return response()->json($response, 404);
+        }
     }
 }

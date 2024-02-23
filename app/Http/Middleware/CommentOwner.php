@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\Comment;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class CommentOwner
@@ -16,11 +17,17 @@ class CommentOwner
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = auth()->user();
-        $comment = Comment::findOrFail($request->id);
+        $user = Auth::user();
+        $comment = Comment::where('id', $request->id)->where('user_id', $user->id)->first();
 
-        if ($comment->user_id != $user->id) {
-            return response()->json(['message' => 'data not found'], 404);
+        if (!$comment) {
+            $response = array(
+                'success' => false,
+                'message' => 'comment not found',
+                'data' => null,
+            );
+
+            return response()->json($response, 404);
         }
 
         return $next($request);

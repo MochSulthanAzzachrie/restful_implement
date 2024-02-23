@@ -23,27 +23,21 @@ use App\Http\Controllers\AuthenticationController;
 //     return $request->user();
 // });
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
+    Route::post('register', [AuthenticationController::class, 'register']);
+    Route::post('login', [AuthenticationController::class, 'login']);
+    Route::post('logout', [AuthenticationController::class, 'logout']);
+    Route::post('refresh', [AuthenticationController::class, 'refresh']);
+    Route::post('me', [AuthenticationController::class, 'me']);
 
-    Route::get('/logout', [AuthenticationController::class, 'logout']);
-    Route::get('/me', [AuthenticationController::class, 'me']);
-    Route::post('/posts', [PostController::class, 'store']);
-    Route::patch('/posts/{id}', [PostController::class, 'update'])->middleware('post_owner');
-    Route::delete('/posts/{id}', [PostController::class, 'destroy'])->middleware('post_owner');
+    Route::apiResource('/post', PostController::class, ['except' => ['update', 'destroy']]);
+    Route::apiResource('/posts', PostController::class, ['only' => ['update', 'destroy']])->parameter('posts', 'id')->middleware('post_owner');
 
     Route::post('/comment', [CommentController::class, 'store']);
-    Route::patch('/comment/{id}', [CommentController::class, 'update'])->middleware('comment_owner');
-    Route::delete('/comment/{id}', [CommentController::class, 'destroy'])->middleware('comment_owner');
+    Route::apiResource('/comments', CommentController::class, ['only' => ['update', 'destroy']])->parameter('comments', 'id')->middleware('comment_owner');
 
-    Route::get('/users', [UserController::class, 'index']);
-    Route::get('/user/{id}', [UserController::class, 'show']);
-    Route::post('/user', [UserController::class, 'store']);
-    Route::patch('/user/{id}', [UserController::class, 'update']);
-    Route::delete('/users/{id}', [UserController::class, 'destroy']);
+    Route::apiResource('/users', UserController::class)->parameter('users', 'id');
 });
 
-Route::get('/posts', [PostController::class, 'index']);
-Route::get('/posts/{id}', [PostController::class, 'show']);
 // Route::get('/posts2/{id}', [PostController::class, 'show2']);
 
-Route::post('/login', [AuthenticationController::class, 'login']);
