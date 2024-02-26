@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
+use Laravel\SerializableClosure\Support\SelfReference;
 
 class Comment extends Model
 {
@@ -29,26 +30,26 @@ class Comment extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public static function createComment(Request $request)
-    {
+        public static function createComment(array $data)
+        {
 
-        $request['user_id'] = auth()->user()->id;
+            $data['user_id'] = auth()->user()->id;
 
-        $comment = Comment::create($request->all());
+            $comment = self::create($data);
 
-        return $comment;
-    }
+            return $comment;
+        }
 
-    public static function editComment(Request $request, $id)
-    {
+        public static function updateComment(array $data, $id)
+        {
 
-        $comment = Comment::find($id);
-        $comment->update($request->only('comments_content'));
+            $comment = self::find($id);
+            $comment->update(['comments_content' => $data['comments_content']]);
 
-        return $comment;
-    }
+            return $comment;
+        }
 
-    public static function breakComment($id)
+    public static function deleteComment($id)
     {
         $comment = Comment::findOrFail($id);
         $comment->delete();

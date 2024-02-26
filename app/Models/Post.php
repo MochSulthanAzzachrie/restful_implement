@@ -55,25 +55,25 @@ class Post extends Model
         return $post;
     }
 
-    public static function createPost(Request $request)
+    public static function createPost(array $data)
     {
 
-        $request['user_id'] = Auth::user()->id;
-        $post = Post::create($request->all());
+        $data['user_id'] = Auth::user()->id;
+        $post = Post::create($data);
 
         return $post;
     }
 
-    public static function editPost(Request $request, $id)
+    public static function updatePost(array $data, $id)
     {
 
         $post = Post::find($id);
-        $post->update($request->all());
+        $post->update($data);
 
         return $post;
     }
 
-    public static function breakPost($id)
+    public static function deletePost($id)
     {
         $post = Post::find($id);
         $post->delete();

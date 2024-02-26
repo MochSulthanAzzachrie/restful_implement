@@ -7,8 +7,9 @@ use App\Models\Comment;
 use Illuminate\Http\Request;
 use App\Http\Resources\PostResource;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Resources\PostDetailResource;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\PostDetailResource;
 
 class PostController extends Controller
 {
@@ -73,12 +74,21 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'title' => 'required|max:225',
             'novel_content' => 'required',
         ]);
 
-        $post = Post::createPost($request);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'failed, payload not suited',
+                'data' => null,
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        $post = Post::createPost($validator->validated());
 
         if ($post) {
              $response = array(
@@ -101,12 +111,21 @@ class PostController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'title' => 'nullable|max:225',
             'novel_content' => 'nullable',
         ]);
 
-        $post = Post::editPost($request, $id);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'failed, payload not suited',
+                'data' => null,
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        $post = Post::updatePost($validator->validated(), $id);
 
         if ($post) {
             $response = array(
@@ -129,7 +148,7 @@ class PostController extends Controller
 
     public function destroy($id)
     {
-        $post = Post::breakPost($id);
+        $post = Post::deletePost($id);
 
         if ($post) {
             $response = array(

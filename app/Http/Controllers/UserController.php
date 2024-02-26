@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\UserResource;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -62,7 +63,7 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'email' => 'required',
             'username' => 'required|max:225',
             'password' => 'required',
@@ -70,7 +71,16 @@ class UserController extends Controller
             'lastname' => 'nullable',
         ]);
 
-        $user = User::createUser($request);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'failed, payload not suited',
+                'data' => null,
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        $user = User::createUser($validator->validated());
 
         if ($user) {
             $response = array(
@@ -93,7 +103,7 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'email' => 'nullable',
             'username' => 'nullable|max:225',
             'password' => 'nullable',
@@ -101,7 +111,16 @@ class UserController extends Controller
             'lastname' => 'nullable',
         ]);
 
-        $user = User::editUser($request, $id);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'failed, payload not suited',
+                'data' => null,
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        $user = User::updateUser($validator->validated(), $id);
 
         if ($user) {
             $response = array(
@@ -124,7 +143,7 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        $user = User::breakUser($id);
+        $user = User::deleteUser($id);
 
         if ($user) {
             $response = array(

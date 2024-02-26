@@ -66,24 +66,24 @@ class User extends Authenticatable implements JWTSubject
         return $user;
     }
 
-    public static function createUser(Request $request)
+    public static function createUser(array $data)
     {
 
-        $user = User::create($request->all());
+        $user = User::create($data);
 
         return $user;
     }
 
-    public static function editUser(Request $request, $id)
+    public static function updateUser(array $data, $id)
     {
 
         $user = User::find($id);
-        $user->update($request->all());
+        $user->update($data);
 
         return $user;
     }
 
-    public static function breakUser($id)
+    public static function deleteUser($id)
     {
         $user = User::findOrFail($id);
         $user->delete();

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use App\Http\Resources\CommentResource;
+use Illuminate\Support\Facades\Validator;
 
 class CommentController extends Controller
 {
@@ -15,14 +16,23 @@ class CommentController extends Controller
     // }
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'post_id' => 'required|exists:posts,id',
             'comments_content' => 'required',
         ]);
 
-        $comment = Comment::createComment($request);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'failed, payload not suited',
+                'data' => null,
+                'errors' => $validator->errors(),
+            ], 400);
+        }
 
-        if($comment) {
+        $comment = Comment::createComment($validator->validated());
+
+        if ($comment) {
             $response = array(
                 'success' => true,
                 'message' => 'Created successfully',
@@ -43,13 +53,22 @@ class CommentController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'comments_content' => 'required',
         ]);
 
-        $comment = Comment::editComment($request, $id);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'failed, payload not suited',
+                'data' => null,
+                'errors' => $validator->errors(),
+            ], 400);
+        }
 
-        if($comment) {
+        $comment = Comment::updateComment($validator->validated(), $id);
+
+        if ($comment) {
             $response = array(
                 'success' => true,
                 'message' => 'Updated successfully',
@@ -70,9 +89,9 @@ class CommentController extends Controller
 
     public function destroy($id)
     {
-        $comment = Comment::breakComment($id);
+        $comment = Comment::deleteComment($id);
 
-        if($comment) {
+        if ($comment) {
             $response = array(
                 'success' => true,
                 'message' => 'Deleted successfully',

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 
 class AuthenticationController extends Controller
 {
@@ -23,9 +24,9 @@ class AuthenticationController extends Controller
     //     $this->middleware('auth:api', ['except' => ['login', 'register']]);
     // }
 
-    public function register()
+    public function register(Request $request)
     {
-        $validator = Validator::make(request()->all(), [
+        $validator = Validator::make($request->all(), [
             'email' => 'required|email|unique:users',
             'username' => 'required|max:225',
             'password' => 'required',
@@ -34,7 +35,12 @@ class AuthenticationController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->messages());
+            return response()->json([
+                'success' => false,
+                'message' => 'failed, payload not suited',
+                'data' => null,
+                'errors' => $validator->errors(),
+            ], 400);
         }
 
         $user = User::authRegister();
@@ -65,7 +71,10 @@ class AuthenticationController extends Controller
      */
     public function me()
     {
-        return response()->json(auth()->user());
+        // dd(auth()->user());
+        $user = auth()->user();
+
+        return response()->json($user);
     }
 
     /**
@@ -87,6 +96,13 @@ class AuthenticationController extends Controller
      */
     public function refresh()
     {
+        // try {
+        //     $newToken = auth()->refresh();
+        // } catch (TokenInvalidException $e) {
+        //     return response()->json(['error' => 'Token is invalid'], 401);
+        // }
+
+        // return $this->respondWithToken($newToken);
         return $this->respondWithToken(auth()->refresh());
     }
 
