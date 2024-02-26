@@ -72,9 +72,7 @@ class AuthenticationController extends Controller
     public function me()
     {
         // dd(auth()->user());
-        $user = auth()->user();
-
-        return response()->json($user);
+        return response()->json(auth()->user());
     }
 
     /**
