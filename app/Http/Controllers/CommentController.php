@@ -67,7 +67,7 @@ class CommentController extends Controller
             ], 400);
         }
 
-        $comment = Comment::updateComment($validator->validated(), $id);
+        $comment = CommentService::updateComment($validator->validated(), $id);
 
         if ($comment) {
             $response = array(
