@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\PostDetailResource;
+use App\Service\PostService;
 
 class PostController extends Controller
 {
@@ -21,7 +22,7 @@ class PostController extends Controller
     // }
     public function index()
     {
-        $posts = Post::getPosts();
+        $posts = PostService::getPosts();
 
         if ($posts) {
             $response = array(
@@ -44,7 +45,7 @@ class PostController extends Controller
 
     public function show($id)
     {
-        $post = Post::getPostById($id);
+        $post = PostService::getPostById($id);
 
         if ($post) {
             $response = array(
@@ -88,7 +89,7 @@ class PostController extends Controller
             ], 400);
         }
 
-        $post = Post::createPost($validator->validated());
+        $post = PostService::createPost($validator->validated());
 
         if ($post) {
              $response = array(
@@ -125,7 +126,7 @@ class PostController extends Controller
             ], 400);
         }
 
-        $post = Post::updatePost($validator->validated(), $id);
+        $post = PostService::updatePost($validator->validated(), $id);
 
         if ($post) {
             $response = array(
@@ -148,7 +149,7 @@ class PostController extends Controller
 
     public function destroy($id)
     {
-        $post = Post::deletePost($id);
+        $post = PostService::deletePost($id);
 
         if ($post) {
             $response = array(

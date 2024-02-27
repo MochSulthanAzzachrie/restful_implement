@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Service\CommentService;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use App\Http\Resources\CommentResource;
@@ -30,7 +31,7 @@ class CommentController extends Controller
             ], 400);
         }
 
-        $comment = Comment::createComment($validator->validated());
+        $comment = CommentService::createComment($validator->validated());
 
         if ($comment) {
             $response = array(
@@ -89,7 +90,7 @@ class CommentController extends Controller
 
     public function destroy($id)
     {
-        $comment = Comment::deleteComment($id);
+        $comment = CommentService::deleteComment($id);
 
         if ($comment) {
             $response = array(

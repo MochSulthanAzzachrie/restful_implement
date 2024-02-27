@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
+use App\Service\UserService;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -17,7 +18,7 @@ class UserController extends Controller
     // }
     public function index()
     {
-        $users = User::getUsers();
+        $users = UserService::getUsers();
 
         if ($users) {
             $response = array(
@@ -40,7 +41,7 @@ class UserController extends Controller
 
     public function show($id)
     {
-        $user = User::getUserById($id);
+        $user = UserService::getUserById($id);
 
         if ($user) {
             $response = array(
@@ -80,7 +81,7 @@ class UserController extends Controller
             ], 400);
         }
 
-        $user = User::createUser($validator->validated());
+        $user = UserService::createUser($validator->validated());
 
         if ($user) {
             $response = array(
@@ -120,7 +121,7 @@ class UserController extends Controller
             ], 400);
         }
 
-        $user = User::updateUser($validator->validated(), $id);
+        $user = UserService::updateUser($validator->validated(), $id);
 
         if ($user) {
             $response = array(
@@ -143,7 +144,7 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        $user = User::deleteUser($id);
+        $user = UserService::deleteUser($id);
 
         if ($user) {
             $response = array(

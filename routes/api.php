@@ -28,7 +28,7 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::post('auth/refresh', [AuthenticationController::class, 'refresh']);
     Route::post('auth/me', [AuthenticationController::class, 'me']);
 
-    Route::apiResource('/posts', PostController::class, ['except' => ['update', 'destroy']]);
+    Route::apiResource('/posts', PostController::class, ['except' => ['update', 'destroy']])->parameter('posts', 'id');
     Route::apiResource('/posts', PostController::class, ['only' => ['update', 'destroy']])->parameter('posts', 'id')->middleware('post_owner');
 
     Route::apiResource('/comments', CommentController::class, ['only' => ['update', 'destroy']])->parameter('comments', 'id')->middleware('comment_owner');

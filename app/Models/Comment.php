@@ -30,24 +30,24 @@ class Comment extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-        public static function createComment(array $data)
-        {
+    public static function createComment(array $data)
+    {
 
-            $data['user_id'] = auth()->user()->id;
+        $data['user_id'] = auth()->user()->id;
 
-            $comment = self::create($data);
+        $comment = self::create($data);
 
-            return $comment;
-        }
+        return $comment;
+    }
 
-        public static function updateComment(array $data, $id)
-        {
+    public static function updateComment(array $data, $id)
+    {
 
-            $comment = self::find($id);
-            $comment->update(['comments_content' => $data['comments_content']]);
+        $comment = self::find($id);
+        $comment->update(['comments_content' => $data['comments_content']]);
 
-            return $comment;
-        }
+        return $comment;
+    }
 
     public static function deleteComment($id)
     {
