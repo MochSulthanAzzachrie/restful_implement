@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\User;
-use App\Service\UserService;
+use App\Service\AuthService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -44,7 +44,7 @@ class AuthenticationController extends Controller
             ], 400);
         }
 
-        $user = UserService::authRegister();
+        $user = AuthService::authRegister();
 
         if ($user) {
             return response()->json(['message' => 'Successfully Registered']);
@@ -60,7 +60,7 @@ class AuthenticationController extends Controller
      */
     public function login()
     {
-        $token = UserService::authLogin();
+        $token = AuthService::authLogin();
 
         return $this->respondWithToken($token);
     }
@@ -72,7 +72,6 @@ class AuthenticationController extends Controller
      */
     public function me()
     {
-        // dd(auth()->user());
         return response()->json(auth()->user());
     }
 
@@ -95,13 +94,6 @@ class AuthenticationController extends Controller
      */
     public function refresh()
     {
-        // try {
-        //     $newToken = auth()->refresh();
-        // } catch (TokenInvalidException $e) {
-        //     return response()->json(['error' => 'Token is invalid'], 401);
-        // }
-
-        // return $this->respondWithToken($newToken);
         return $this->respondWithToken(auth()->refresh());
     }
 

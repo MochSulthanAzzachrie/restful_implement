@@ -42,15 +42,4 @@ class UserService
         return $user;
     }
 
-    public static function authRegister() {
-        $user = User::authRegister();
-
-        return $user;
-    }
-
-    public static function authLogin() {
-        $user = User::authLogin();
-
-        return $user;
-    }
 }
