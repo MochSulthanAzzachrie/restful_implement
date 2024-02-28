@@ -47,9 +47,21 @@ class AuthenticationController extends Controller
         $user = AuthService::authRegister();
 
         if ($user) {
-            return response()->json(['message' => 'Successfully Registered']);
+            $response = array(
+                'success' => true,
+                'message' => 'Successfully Registered',
+                'data' => $user,
+            );
+
+            return response()->json($response, 200);
         } else {
-            return response()->json(['message' => 'Failed Registered']);
+            $response = array(
+                'success' => false,
+                'message' => 'Failed Registered',
+                'data' => null,
+            );
+
+            return response()->json($response, 400);
         }
     }
 
@@ -62,7 +74,27 @@ class AuthenticationController extends Controller
     {
         $token = AuthService::authLogin();
 
-        return $this->respondWithToken($token);
+        if ($token) {
+            $response = array(
+                'success' => true,
+                'message' => 'Successfully logged in',
+                'data' => [
+                    'access_token' => $token,
+                    'token_type' => 'bearer',
+                    'expires_in' => auth()->factory()->getTTL() * 60,
+                ]
+            );
+
+            return response()->json($response, 200);
+        } else {
+            $response = array(
+                'success' => false,
+                'message' => 'Failed logged in',
+                'data' => null,
+            );
+
+            return response()->json($response, 404);
+        }
     }
 
     /**
@@ -72,7 +104,25 @@ class AuthenticationController extends Controller
      */
     public function me()
     {
-        return response()->json(auth()->user());
+        $user = AuthService::authMe();
+
+        if ($user) {
+            $response = array(
+                'success' => true,
+                'message' => 'Data successfully found',
+                'data' => $user,
+            );
+
+            return response()->json($response, 200);
+        } else {
+            $response = array(
+                'success' => false,
+                'message' => 'Data not found',
+                'data' => null,
+            );
+
+            return response()->json($response, 404);
+        }
     }
 
     /**
@@ -82,9 +132,14 @@ class AuthenticationController extends Controller
      */
     public function logout()
     {
-        auth()->logout();
+        $user = AuthService::authLogout();
 
-        return response()->json(['message' => 'Successfully logged out']);
+            $response = array(
+                'success' => $user,
+                'message' => 'Successfully logged out',
+            );
+
+            return response()->json($response, 200);
     }
 
     /**
@@ -94,22 +149,29 @@ class AuthenticationController extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken(auth()->refresh());
+        $token = AuthService::authRefresh();
+
+        if ($token) {
+            $response = array(
+                'success' => true,
+                'message' => 'Successfully refreshed',
+                'data' => [
+                    'access_token' => $token,
+                    'token_type' => 'bearer',
+                    'expires_in' => auth()->factory()->getTTL() * 60,
+                ]
+            );
+
+            return response()->json($response, 200);
+        } else {
+            $response = array(
+                'success' => false,
+                'message' => 'Failed refreshed',
+                'data' => null,
+            );
+
+            return response()->json($response, 404);
+        }
     }
 
-    /**
-     * Get the token array structure.
-     *
-     * @param  string $token
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function respondWithToken($token)
-    {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
-        ]);
-    }
 }
