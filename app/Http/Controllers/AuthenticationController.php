@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\User;
+use App\Service\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -43,7 +44,7 @@ class AuthenticationController extends Controller
             ], 400);
         }
 
-        $user = User::authRegister();
+        $user = UserService::authRegister();
 
         if ($user) {
             return response()->json(['message' => 'Successfully Registered']);
@@ -59,7 +60,7 @@ class AuthenticationController extends Controller
      */
     public function login()
     {
-        $token = User::authLogin();
+        $token = UserService::authLogin();
 
         return $this->respondWithToken($token);
     }

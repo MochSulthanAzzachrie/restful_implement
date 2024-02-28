@@ -54,14 +54,14 @@ class User extends Authenticatable implements JWTSubject
 
     public static function getUsers()
     {
-        $users = User::all();
+        $users = self::all();
 
         return $users;
     }
 
     public static function getUserById($id)
     {
-        $user = User::find($id);
+        $user = self::find($id);
 
         return $user;
     }
@@ -69,7 +69,7 @@ class User extends Authenticatable implements JWTSubject
     public static function createUser(array $data)
     {
 
-        $user = User::create($data);
+        $user = self::create($data);
 
         return $user;
     }
@@ -77,7 +77,7 @@ class User extends Authenticatable implements JWTSubject
     public static function updateUser(array $data, $id)
     {
 
-        $user = User::find($id);
+        $user = self::find($id);
         $user->update($data);
 
         return $user;
@@ -85,7 +85,7 @@ class User extends Authenticatable implements JWTSubject
 
     public static function deleteUser($id)
     {
-        $user = User::findOrFail($id);
+        $user = self::findOrFail($id);
         $user->delete();
 
         return $user;
@@ -93,7 +93,7 @@ class User extends Authenticatable implements JWTSubject
 
     public static function authRegister() {
 
-        $user = User::create([
+        $user = self::create([
             'email' => request('email'),
             'username' => request('username'),
             'password' => Hash::make(request('password')),

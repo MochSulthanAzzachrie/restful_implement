@@ -51,7 +51,7 @@ class Comment extends Model
 
     public static function deleteComment($id)
     {
-        $comment = Comment::findOrFail($id);
+        $comment = self::findOrFail($id);
         $comment->delete();
 
         return $comment;

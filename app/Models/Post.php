@@ -43,14 +43,14 @@ class Post extends Model
 
     public static function getPosts()
     {
-        $posts = Post::with('comments')->get();
+        $posts = self::with('comments')->get();
 
         return $posts;
     }
 
     public static function getPostById($id)
     {
-        $post = Post::with('comments')->find($id);
+        $post = self::with('comments')->find($id);
 
         return $post;
     }
@@ -59,7 +59,7 @@ class Post extends Model
     {
 
         $data['user_id'] = Auth::user()->id;
-        $post = Post::create($data);
+        $post = self::create($data);
 
         return $post;
     }
@@ -67,7 +67,7 @@ class Post extends Model
     public static function updatePost(array $data, $id)
     {
 
-        $post = Post::find($id);
+        $post = self::find($id);
         $post->update($data);
 
         return $post;
@@ -75,7 +75,7 @@ class Post extends Model
 
     public static function deletePost($id)
     {
-        $post = Post::find($id);
+        $post = self::find($id);
         $post->delete();
 
         return $post;
