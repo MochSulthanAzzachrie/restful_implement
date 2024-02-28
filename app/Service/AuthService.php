@@ -8,15 +8,15 @@ use App\Repositories\AuthRepository;
 class AuthService
 {
     public static function authRegister() {
-        $user = User::authRegister();
+        $result = User::authRegister();
 
-        return $user;
+        return $result;
     }
 
     public static function authLogin() {
-        $user = User::authLogin();
+        $result = User::authLogin();
 
-        return $user;
+        return $result;
     }
 
 }

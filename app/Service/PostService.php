@@ -9,36 +9,36 @@ class PostService
 {
     public static function getPosts()
     {
-        $posts = Post::getPosts();
+        $results = Post::getPosts();
 
-        return $posts;
+        return $results;
     }
 
     public static function getPostById($id)
     {
-        $post = Post::getPostById($id);
+        $result = Post::getPostById($id);
 
-        return $post;
+        return $result;
     }
 
     public static function createPost(array $data)
     {
-        $post = Post::createPost($data);
+        $result = Post::createPost($data);
 
-        return $post;
+        return $result;
     }
 
     public static function updatePost(array $data, $id)
     {
-        $post = Post::updatePost($data, $id);
+        $result = Post::updatePost($data, $id);
 
-        return $post;
+        return $result;
     }
 
     public static function deletePost($id)
     {
-        $post = Post::deletePost($id);
+        $result = Post::deletePost($id);
 
-        return $post;
+        return $result;
     }
 }

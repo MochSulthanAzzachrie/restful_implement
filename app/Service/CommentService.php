@@ -9,22 +9,22 @@ class CommentService
 {
     public static function createComment(array $data)
     {
-        $comment = Comment::createComment($data);
+        $result = Comment::createComment($data);
 
-        return $comment;
+        return $result;
     }
 
     public static function updateComment(array $data, $id)
     {
-        $comment = Comment::updateComment($data, $id);
+        $result = Comment::updateComment($data, $id);
 
-        return $comment;
+        return $result;
     }
 
     public static function deleteComment($id)
     {
-        $comment = Comment::deleteComment($id);
+        $result = Comment::deleteComment($id);
 
-        return $comment;
+        return $result;
     }
 }

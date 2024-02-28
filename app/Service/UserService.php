@@ -9,37 +9,37 @@ class UserService
 {
     public static function getUsers()
     {
-        $users = User::getUsers();
+        $results = User::getUsers();
 
-        return $users;
+        return $results;
     }
 
     public static function getUserById($id)
     {
-        $user = User::getUserById($id);
+        $result = User::getUserById($id);
 
-        return $user;
+        return $result;
     }
 
     public static function createUser(array $data)
     {
-        $user = User::createUser($data);
+        $result = User::createUser($data);
 
-        return $user;
+        return $$result;
     }
 
     public static function updateUser(array $data, $id)
     {
-        $user = User::updateUser($data, $id);
+        $result = User::updateUser($data, $id);
 
-        return $user;
+        return $result;
     }
 
     public static function deleteUser($id)
     {
-        $user = User::deleteUser($id);
+        $result = User::deleteUser($id);
 
-        return $user;
+        return $result;
     }
 
 }
