@@ -39,6 +39,3 @@ Route::post('auth/register', [AuthenticationController::class, 'register']);
 Route::post('auth/login', [AuthenticationController::class, 'login']);
 
 Route::post('/comments', [CommentController::class, 'store']);
-
-// Route::apiResource('/users', UserController::class, ['only' => ['index', 'show']]);
-// Route::get('/posts2/{id}', [PostController::class, 'show2']);

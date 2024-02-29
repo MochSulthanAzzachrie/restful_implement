@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Operation\Operation;
 use Illuminate\Http\Request;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Validator;
@@ -16,22 +15,22 @@ class UserController extends Controller
     // }
     public function index()
     {
-        $users = UserService::getUsers();
+        $operation = UserService::getUsers();
 
-        if ($users->isSuccess()) {
+        if ($operation->isSuccess()) {
             $response = [
-                'success' => $users->isSuccess(),
-                'message' => $users->getMessage(),
-                'data' => $users->getResult()
+                'success' => $operation->isSuccess(),
+                'message' => $operation->getMessage(),
+                'data' => $operation->getResult()
             ];
             return response()->json($response, 200);
         }
 
         $response = [
             "success" => false,
-            "message" => $users->getMessage(),
+            "message" => $operation->getMessage(),
             "data" => null,
-            "errors" => $users->getErrors()
+            "errors" => $operation->getErrors()
         ];
         return response()->json($response, 400);
 
@@ -39,24 +38,24 @@ class UserController extends Controller
 
     public function show($id)
     {
-        $user = UserService::getUserById($id);
+        $operation = UserService::getUserById($id);
 
-        if ($user->isSuccess()) {
+        if ($operation->isSuccess()) {
             $response = [
-                'success' => $user->isSuccess(),
-                'message' => $user->getMessage(),
-                'data' => $user->getResult()
+                'success' => $operation->isSuccess(),
+                'message' => $operation->getMessage(),
+                'data' => $operation->getResult()
             ];
             return response()->json($response, 200);
         }
 
         $response = [
             "success" => false,
-            "message" => $user->getMessage(),
+            "message" => $operation->getMessage(),
             "data" => null,
-            "errors" => $user->getErrors()
+            "errors" => $operation->getErrors()
         ];
-        return response()->json($response, 400);
+        return response()->json($response, 404);
 
     }
 
@@ -79,22 +78,22 @@ class UserController extends Controller
             ], 400);
         }
 
-        $user = UserService::createUser($validator->validated());
+        $operation = UserService::createUser($validator->validated());
 
-        if ($user->isSuccess()) {
+        if ($operation->isSuccess()) {
             $response = [
-                'success' => $user->isSuccess(),
-                'message' => $user->getMessage(),
-                'data' => $user->getResult()
+                'success' => $operation->isSuccess(),
+                'message' => $operation->getMessage(),
+                'data' => $operation->getResult()
             ];
-            return response()->json($response, 200);
+            return response()->json($response, 201);
         }
 
         $response = [
             "success" => false,
-            "message" => $user->getMessage(),
+            "message" => $operation->getMessage(),
             "data" => null,
-            "errors" => $user->getErrors()
+            "errors" => $operation->getErrors()
         ];
         return response()->json($response, 400);
 
@@ -119,47 +118,47 @@ class UserController extends Controller
             ], 400);
         }
 
-        $user = UserService::updateUser($validator->validated(), $id);
+        $operation = UserService::updateUser($validator->validated(), $id);
 
-        if ($user->isSuccess()) {
+        if ($operation->isSuccess()) {
             $response = [
-                'success' => $user->isSuccess(),
-                'message' => $user->getMessage(),
-                'data' => $user->getResult()
+                'success' => $operation->isSuccess(),
+                'message' => $operation->getMessage(),
+                'data' => $operation->getResult()
             ];
-            return response()->json($response, 200);
+            return response()->json($response, 201);
         }
 
         $response = [
             "success" => false,
-            "message" => $user->getMessage(),
+            "message" => $operation->getMessage(),
             "data" => null,
-            "errors" => $user->getErrors()
+            "errors" => $operation->getErrors()
         ];
-        return response()->json($response, 400);
+        return response()->json($response, 404);
 
     }
 
     public function destroy($id)
     {
-        $user = UserService::deleteUser($id);
+        $operation = UserService::deleteUser($id);
 
-        if ($user->isSuccess()) {
+        if ($operation->isSuccess()) {
             $response = [
-                'success' => $user->isSuccess(),
-                'message' => $user->getMessage(),
-                'data' => $user->getResult()
+                'success' => $operation->isSuccess(),
+                'message' => $operation->getMessage(),
+                'data' => $operation->getResult()
             ];
             return response()->json($response, 200);
         }
 
         $response = [
             "success" => false,
-            "message" => $user->getMessage(),
+            "message" => $operation->getMessage(),
             "data" => null,
-            "errors" => $user->getErrors()
+            "errors" => $operation->getErrors()
         ];
-        return response()->json($response, 400);
+        return response()->json($response, 404);
 
     }
 }

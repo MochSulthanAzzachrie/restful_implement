@@ -29,22 +29,22 @@ class CommentController extends Controller
             ], 400);
         }
 
-        $comment = CommentService::createComment($validator->validated());
+        $operation = CommentService::createComment($validator->validated());
 
-        if ($comment->isSuccess()) {
+        if ($operation->isSuccess()) {
             $response = array(
-                'success' => $comment->isSuccess(),
-                'message' => $comment->getMessage(),
-                'data' => $comment->getResult(),
+                'success' => $operation->isSuccess(),
+                'message' => $operation->getMessage(),
+                'data' => $operation->getResult(),
             );
 
             return response()->json($response, 201);
         }
         $response = array(
             'success' => false,
-            'message' => $comment->getMessage(),
+            'message' => $operation->getMessage(),
             'data' => null,
-            'error' => $comment->getErrors(),
+            'error' => $operation->getErrors(),
         );
 
         return response()->json($response, 400);
@@ -65,45 +65,45 @@ class CommentController extends Controller
             ], 400);
         }
 
-        $comment = CommentService::updateComment($validator->validated(), $id);
+        $operation = CommentService::updateComment($validator->validated(), $id);
 
-        if ($comment->isSuccess()) {
+        if ($operation->isSuccess()) {
             $response = array(
-                'success' => $comment->isSuccess(),
-                'message' => $comment->getMessage(),
-                'data' => $comment->getResult(),
+                'success' => $operation->isSuccess(),
+                'message' => $operation->getMessage(),
+                'data' => $operation->getResult(),
             );
 
-            return response()->json($response, 200);
+            return response()->json($response, 201);
         }
         $response = array(
             'success' => false,
-            'message' => $comment->getMessage(),
+            'message' => $operation->getMessage(),
             'data' => null,
-            'error' => $comment->getErrors(),
+            'error' => $operation->getErrors(),
         );
 
-        return response()->json($response, 400);
+        return response()->json($response, 404);
     }
 
     public function destroy($id)
     {
-        $comment = CommentService::deleteComment($id);
+        $operation = CommentService::deleteComment($id);
 
-        if ($comment->isSuccess()) {
+        if ($operation->isSuccess()) {
             $response = array(
-                'success' => $comment->isSuccess(),
-                'message' => $comment->getMessage(),
-                'data' => $comment->getResult(),
+                'success' => $operation->isSuccess(),
+                'message' => $operation->getMessage(),
+                'data' => $operation->getResult(),
             );
 
             return response()->json($response, 200);
         }
         $response = array(
             'success' => false,
-            'message' => $comment->getMessage(),
+            'message' => $operation->getMessage(),
             'data' => null,
-            'error' => $comment->getErrors(),
+            'error' => $operation->getErrors(),
         );
 
         return response()->json($response, 404);

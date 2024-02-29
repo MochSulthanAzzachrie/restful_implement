@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Operation\Operation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Services\PostService;
@@ -17,22 +16,22 @@ class PostController extends Controller
     // }
     public function index()
     {
-        $posts = PostService::getPosts();
+        $operation = PostService::getPosts();
 
-        if ($posts->isSuccess()) {
+        if ($operation->isSuccess()) {
             $response = [
-                'success' => $posts->isSuccess(),
-                'message' => $posts->getMessage(),
-                'data' => $posts->getResult()
+                'success' => $operation->isSuccess(),
+                'message' => $operation->getMessage(),
+                'data' => $operation->getResult()
             ];
             return response()->json($response, 200);
         }
 
         $response = [
             "success" => false,
-            "message" => $posts->getMessage(),
+            "message" => $operation->getMessage(),
             "data" => null,
-            "errors" => $posts->getErrors()
+            "errors" => $operation->getErrors()
         ];
         return response()->json($response, 400);
 
@@ -40,31 +39,31 @@ class PostController extends Controller
 
     public function show($id)
     {
-        $post = PostService::getPostById($id);
+        $operation = PostService::getPostById($id);
 
-        if ($post->isSuccess()) {
+        if ($operation->isSuccess()) {
             $response = [
-                'success' => $post->isSuccess(),
-                'message' => $post->getMessage(),
-                'data' => $post->getResult()
+                'success' => $operation->isSuccess(),
+                'message' => $operation->getMessage(),
+                'data' => $operation->getResult()
             ];
             return response()->json($response, 200);
         }
 
         $response = [
             "success" => false,
-            "message" => $post->getMessage(),
+            "message" => $operation->getMessage(),
             "data" => null,
-            "errors" => $post->getErrors()
+            "errors" => $operation->getErrors()
         ];
-        return response()->json($response, 400);
+        return response()->json($response, 404);
 
     }
 
     // public function show2($id)
     // {
-    //     $post = Post::findOrFail($id);
-    //     // return response()->json(['data' => $post]);
+    //     $operation = Post::findOrFail($id);
+    //     // return response()->json(['data' => $operation]);
     //     return new PostDetailResource($post);
     // }
 
@@ -84,22 +83,22 @@ class PostController extends Controller
             ], 400);
         }
 
-        $post = PostService::createPost($validator->validated());
+        $operation = PostService::createPost($validator->validated());
 
-        if ($post->isSuccess()) {
+        if ($operation->isSuccess()) {
             $response = [
-                'success' => $post->isSuccess(),
-                'message' => $post->getMessage(),
-                'data' => $post->getResult()
+                'success' => $operation->isSuccess(),
+                'message' => $operation->getMessage(),
+                'data' => $operation->getResult()
             ];
-            return response()->json($response, 200);
+            return response()->json($response, 201);
         }
 
         $response = [
             "success" => false,
-            "message" => $post->getMessage(),
+            "message" => $operation->getMessage(),
             "data" => null,
-            "errors" => $post->getErrors()
+            "errors" => $operation->getErrors()
         ];
         return response()->json($response, 400);
 
@@ -121,47 +120,47 @@ class PostController extends Controller
             ], 400);
         }
 
-        $post = PostService::updatePost($validator->validated(), $id);
+        $operation = PostService::updatePost($validator->validated(), $id);
 
-        if ($post->isSuccess()) {
+        if ($operation->isSuccess()) {
             $response = [
-                'success' => $post->isSuccess(),
-                'message' => $post->getMessage(),
-                'data' => $post->getResult()
+                'success' => $operation->isSuccess(),
+                'message' => $operation->getMessage(),
+                'data' => $operation->getResult()
             ];
-            return response()->json($response, 200);
+            return response()->json($response, 201);
         }
 
         $response = [
             "success" => false,
-            "message" => $post->getMessage(),
+            "message" => $operation->getMessage(),
             "data" => null,
-            "errors" => $post->getErrors()
+            "errors" => $operation->getErrors()
         ];
-        return response()->json($response, 400);
+        return response()->json($response, 404);
 
     }
 
     public function destroy($id)
     {
-        $post = PostService::deletePost($id);
+        $operation = PostService::deletePost($id);
 
-        if ($post->isSuccess()) {
+        if ($operation->isSuccess()) {
             $response = [
-                'success' => $post->isSuccess(),
-                'message' => $post->getMessage(),
-                'data' => $post->getResult()
+                'success' => $operation->isSuccess(),
+                'message' => $operation->getMessage(),
+                'data' => $operation->getResult()
             ];
             return response()->json($response, 200);
         }
 
         $response = [
             "success" => false,
-            "message" => $post->getMessage(),
+            "message" => $operation->getMessage(),
             "data" => null,
-            "errors" => $post->getErrors()
+            "errors" => $operation->getErrors()
         ];
-        return response()->json($response, 400);
+        return response()->json($response, 404);
 
     }
 }

@@ -39,23 +39,23 @@ class AuthenticationController extends Controller
             ], 400);
         }
 
-        $user = AuthService::authRegister();
+        $operation = AuthService::authRegister();
 
-        if ($user->isSuccess()) {
+        if ($operation->isSuccess()) {
             $response = array(
                 'success' => true,
                 'message' => 'Successfully Registered',
-                'data' => $user->getResult(),
+                'data' => $operation->getResult(),
             );
 
-            return response()->json($response, 200);
+            return response()->json($response, 201);
         }
 
         $response = array(
             'success' => false,
-            'message' => $user->getMessage(),
+            'message' => $operation->getMessage(),
             'data' => null,
-            'error' => $user->getErrors(),
+            'error' => $operation->getErrors(),
         );
 
         return response()->json($response, 400);
@@ -68,14 +68,14 @@ class AuthenticationController extends Controller
      */
     public function login()
     {
-        $token = AuthService::authLogin();
+        $operation = AuthService::authLogin();
 
-        if ($token->isSuccess()) {
+        if ($operation->isSuccess()) {
             $response = array(
                 'success' => true,
                 'message' => 'Successfully logged in',
                 'data' => [
-                    'access_token' => $token->getResult(),
+                    'access_token' => $operation->getResult(),
                     'token_type' => 'bearer',
                     'expires_in' => auth()->factory()->getTTL() * 60,
                 ]
@@ -86,9 +86,9 @@ class AuthenticationController extends Controller
 
         $response = array(
             'success' => false,
-            'message' => $token->getMessage(),
+            'message' => $operation->getMessage(),
             'data' => null,
-            'errors' => $token->getErrors(),
+            'errors' => $operation->getErrors(),
         );
 
         return response()->json($response, 400);
@@ -101,12 +101,12 @@ class AuthenticationController extends Controller
      */
     public function me()
     {
-        $user = AuthService::authMe();
+        $operation = AuthService::authMe();
 
         $response = array(
             'success' => true,
             'message' => 'Data successfully found',
-            'data' => $user->getResult(),
+            'data' => $operation->getResult(),
         );
 
         return response()->json($response, 200);
@@ -119,12 +119,12 @@ class AuthenticationController extends Controller
      */
     public function logout()
     {
-        $user = AuthService::authLogout();
+        $operation = AuthService::authLogout();
 
         $response = array(
             'success' => true,
             'message' => 'Successfully logged out',
-            'data' => $user->getResult(),
+            'data' => $operation->getResult(),
         );
 
         return response()->json($response, 200);
@@ -137,13 +137,13 @@ class AuthenticationController extends Controller
      */
     public function refresh()
     {
-        $token = AuthService::authRefresh();
+        $operation = AuthService::authRefresh();
 
         $response = array(
             'success' => true,
             'message' => 'Successfully refreshed',
             'data' => [
-                'access_token' => $token->getResult(),
+                'access_token' => $operation->getResult(),
                 'token_type' => 'bearer',
                 'expires_in' => auth()->factory()->getTTL() * 60,
             ]
