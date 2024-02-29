@@ -39,7 +39,7 @@ class AuthenticationController extends Controller
             ], 400);
         }
 
-        $operation = AuthService::authRegister();
+        $operation = AuthService::authRegister($validator->validated());
 
         if ($operation->isSuccess()) {
             $response = array(

@@ -9,18 +9,12 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthService
 {
-    public static function authRegister() : Operation
+    public static function authRegister(array $data) : Operation
     {
 
         $operation = new Operation();
 
-        $result = User::create([
-            'email' => request('email'),
-            'username' => request('username'),
-            'password' => Hash::make(request('password')),
-            'firstname' => request('firstname'),
-            'lastname' => request('lastname'),
-        ]);
+        $result = User::createUser($data);
 
         $operation->setIsSuccess(true)
             ->setMessage('success register')
