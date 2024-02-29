@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Service\CommentService;
-use App\Models\Comment;
+use App\Services\CommentService;
 use Illuminate\Http\Request;
-use App\Http\Resources\CommentResource;
 use Illuminate\Support\Facades\Validator;
 
 class CommentController extends Controller
@@ -33,23 +31,23 @@ class CommentController extends Controller
 
         $comment = CommentService::createComment($validator->validated());
 
-        if ($comment) {
+        if ($comment->isSuccess()) {
             $response = array(
-                'success' => true,
-                'message' => 'Created successfully',
-                'data' => $comment,
+                'success' => $comment->isSuccess(),
+                'message' => $comment->getMessage(),
+                'data' => $comment->getResult(),
             );
 
             return response()->json($response, 201);
-        } else {
-            $response = array(
-                'success' => false,
-                'message' => 'Data not found',
-                'data' => null,
-            );
-
-            return response()->json($response, 404);
         }
+        $response = array(
+            'success' => false,
+            'message' => $comment->getMessage(),
+            'data' => null,
+            'error' => $comment->getErrors(),
+        );
+
+        return response()->json($response, 400);
     }
 
     public function update(Request $request, $id)
@@ -69,45 +67,45 @@ class CommentController extends Controller
 
         $comment = CommentService::updateComment($validator->validated(), $id);
 
-        if ($comment) {
+        if ($comment->isSuccess()) {
             $response = array(
-                'success' => true,
-                'message' => 'Updated successfully',
-                'data' => $comment,
+                'success' => $comment->isSuccess(),
+                'message' => $comment->getMessage(),
+                'data' => $comment->getResult(),
             );
 
             return response()->json($response, 200);
-        } else {
-            $response = array(
-                'success' => false,
-                'message' => 'Data not found',
-                'data' => null,
-            );
-
-            return response()->json($response, 404);
         }
+        $response = array(
+            'success' => false,
+            'message' => $comment->getMessage(),
+            'data' => null,
+            'error' => $comment->getErrors(),
+        );
+
+        return response()->json($response, 400);
     }
 
     public function destroy($id)
     {
         $comment = CommentService::deleteComment($id);
 
-        if ($comment) {
+        if ($comment->isSuccess()) {
             $response = array(
-                'success' => true,
-                'message' => 'Deleted successfully',
-                'data' => $comment,
+                'success' => $comment->isSuccess(),
+                'message' => $comment->getMessage(),
+                'data' => $comment->getResult(),
             );
 
             return response()->json($response, 200);
-        } else {
-            $response = array(
-                'success' => false,
-                'message' => 'Data not found',
-                'data' => null,
-            );
-
-            return response()->json($response, 404);
         }
+        $response = array(
+            'success' => false,
+            'message' => $comment->getMessage(),
+            'data' => null,
+            'error' => $comment->getErrors(),
+        );
+
+        return response()->json($response, 404);
     }
 }

@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
-use App\Models\User;
+use App\Http\Operation\Operation;
 use Illuminate\Http\Request;
-use App\Http\Resources\UserResource;
-use App\Service\UserService;
+use App\Services\UserService;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -20,46 +18,46 @@ class UserController extends Controller
     {
         $users = UserService::getUsers();
 
-        if ($users) {
-            $response = array(
-                'success' => true,
-                'message' => 'Data successfully found',
-                'data' => $users,
-            );
-
+        if ($users->isSuccess()) {
+            $response = [
+                'success' => $users->isSuccess(),
+                'message' => $users->getMessage(),
+                'data' => $users->getResult()
+            ];
             return response()->json($response, 200);
-        } else {
-            $response = array(
-                'success' => false,
-                'message' => 'Data not found',
-                'data' => null,
-            );
-
-            return response()->json($response, 404);
         }
+
+        $response = [
+            "success" => false,
+            "message" => $users->getMessage(),
+            "data" => null,
+            "errors" => $users->getErrors()
+        ];
+        return response()->json($response, 400);
+
     }
 
     public function show($id)
     {
         $user = UserService::getUserById($id);
 
-        if ($user) {
-            $response = array(
-                'success' => true,
-                'message' => 'Data successfully found',
-                'data' => $user,
-            );
-
+        if ($user->isSuccess()) {
+            $response = [
+                'success' => $user->isSuccess(),
+                'message' => $user->getMessage(),
+                'data' => $user->getResult()
+            ];
             return response()->json($response, 200);
-        } else {
-            $response = array(
-                'success' => false,
-                'message' => 'Data not found',
-                'data' => null,
-            );
-
-            return response()->json($response, 404);
         }
+
+        $response = [
+            "success" => false,
+            "message" => $user->getMessage(),
+            "data" => null,
+            "errors" => $user->getErrors()
+        ];
+        return response()->json($response, 400);
+
     }
 
     public function store(Request $request)
@@ -83,23 +81,23 @@ class UserController extends Controller
 
         $user = UserService::createUser($validator->validated());
 
-        if ($user) {
-            $response = array(
-                'success' => true,
-                'message' => 'Created successfully',
-                'data' => $user,
-            );
-
-            return response()->json($response, 201);
-        } else {
-            $response = array(
-                'success' => false,
-                'message' => 'Data not found',
-                'data' => null,
-            );
-
-            return response()->json($response, 404);
+        if ($user->isSuccess()) {
+            $response = [
+                'success' => $user->isSuccess(),
+                'message' => $user->getMessage(),
+                'data' => $user->getResult()
+            ];
+            return response()->json($response, 200);
         }
+
+        $response = [
+            "success" => false,
+            "message" => $user->getMessage(),
+            "data" => null,
+            "errors" => $user->getErrors()
+        ];
+        return response()->json($response, 400);
+
     }
 
     public function update(Request $request, $id)
@@ -123,45 +121,45 @@ class UserController extends Controller
 
         $user = UserService::updateUser($validator->validated(), $id);
 
-        if ($user) {
-            $response = array(
-                'success' => true,
-                'message' => 'Updated successfully',
-                'data' => $user,
-            );
-
+        if ($user->isSuccess()) {
+            $response = [
+                'success' => $user->isSuccess(),
+                'message' => $user->getMessage(),
+                'data' => $user->getResult()
+            ];
             return response()->json($response, 200);
-        } else {
-            $response = array(
-                'success' => false,
-                'message' => 'Data not found',
-                'data' => null,
-            );
-
-            return response()->json($response, 404);
         }
+
+        $response = [
+            "success" => false,
+            "message" => $user->getMessage(),
+            "data" => null,
+            "errors" => $user->getErrors()
+        ];
+        return response()->json($response, 400);
+
     }
 
     public function destroy($id)
     {
         $user = UserService::deleteUser($id);
 
-        if ($user) {
-            $response = array(
-                'success' => true,
-                'message' => 'Deleted successfully',
-                'data' => $user,
-            );
-
+        if ($user->isSuccess()) {
+            $response = [
+                'success' => $user->isSuccess(),
+                'message' => $user->getMessage(),
+                'data' => $user->getResult()
+            ];
             return response()->json($response, 200);
-        } else {
-            $response = array(
-                'success' => false,
-                'message' => 'Data not found',
-                'data' => null,
-            );
-
-            return response()->json($response, 404);
         }
+
+        $response = [
+            "success" => false,
+            "message" => $user->getMessage(),
+            "data" => null,
+            "errors" => $user->getErrors()
+        ];
+        return response()->json($response, 400);
+
     }
 }

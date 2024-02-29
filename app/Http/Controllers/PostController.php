@@ -2,15 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
-use App\Models\Comment;
+use App\Http\Operation\Operation;
 use Illuminate\Http\Request;
-use App\Http\Resources\PostResource;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Resources\PostDetailResource;
-use App\Service\PostService;
+use App\Services\PostService;
 
 class PostController extends Controller
 {
@@ -24,46 +19,46 @@ class PostController extends Controller
     {
         $posts = PostService::getPosts();
 
-        if ($posts) {
-            $response = array(
-                'success' => true,
-                'message' => 'Data successfully found',
-                'data' => $posts,
-            );
-
+        if ($posts->isSuccess()) {
+            $response = [
+                'success' => $posts->isSuccess(),
+                'message' => $posts->getMessage(),
+                'data' => $posts->getResult()
+            ];
             return response()->json($response, 200);
-        } else {
-            $response = array(
-                'success' => false,
-                'message' => 'Data not found',
-                'data' => null,
-            );
-
-            return response()->json($response, 404);
         }
+
+        $response = [
+            "success" => false,
+            "message" => $posts->getMessage(),
+            "data" => null,
+            "errors" => $posts->getErrors()
+        ];
+        return response()->json($response, 400);
+
     }
 
     public function show($id)
     {
         $post = PostService::getPostById($id);
 
-        if ($post) {
-            $response = array(
-                'success' => true,
-                'message' => 'Data successfully found',
-                'data' => $post,
-            );
-
+        if ($post->isSuccess()) {
+            $response = [
+                'success' => $post->isSuccess(),
+                'message' => $post->getMessage(),
+                'data' => $post->getResult()
+            ];
             return response()->json($response, 200);
-        } else {
-            $response = array(
-                'success' => false,
-                'message' => 'Data not found',
-                'data' => null,
-            );
-
-            return response()->json($response, 404);
         }
+
+        $response = [
+            "success" => false,
+            "message" => $post->getMessage(),
+            "data" => null,
+            "errors" => $post->getErrors()
+        ];
+        return response()->json($response, 400);
+
     }
 
     // public function show2($id)
@@ -91,23 +86,23 @@ class PostController extends Controller
 
         $post = PostService::createPost($validator->validated());
 
-        if ($post) {
-             $response = array(
-                'success' => true,
-                'message' => 'Created successfully',
-                'data' => $post,
-            );
-
-            return response()->json($response, 201);
-        } else {
-            $response = array(
-                'success' => false,
-                'message' => 'Data not found',
-                'data' => null,
-            );
-
-            return response()->json($response, 404);
+        if ($post->isSuccess()) {
+            $response = [
+                'success' => $post->isSuccess(),
+                'message' => $post->getMessage(),
+                'data' => $post->getResult()
+            ];
+            return response()->json($response, 200);
         }
+
+        $response = [
+            "success" => false,
+            "message" => $post->getMessage(),
+            "data" => null,
+            "errors" => $post->getErrors()
+        ];
+        return response()->json($response, 400);
+
     }
 
     public function update(Request $request, $id)
@@ -128,45 +123,45 @@ class PostController extends Controller
 
         $post = PostService::updatePost($validator->validated(), $id);
 
-        if ($post) {
-            $response = array(
-                'success' => true,
-                'message' => 'Updated successfully',
-                'data' => $post,
-            );
-
+        if ($post->isSuccess()) {
+            $response = [
+                'success' => $post->isSuccess(),
+                'message' => $post->getMessage(),
+                'data' => $post->getResult()
+            ];
             return response()->json($response, 200);
-        } else {
-            $response = array(
-                'success' => false,
-                'message' => 'Data not found',
-                'data' => null,
-            );
-
-            return response()->json($response, 404);
         }
+
+        $response = [
+            "success" => false,
+            "message" => $post->getMessage(),
+            "data" => null,
+            "errors" => $post->getErrors()
+        ];
+        return response()->json($response, 400);
+
     }
 
     public function destroy($id)
     {
         $post = PostService::deletePost($id);
 
-        if ($post) {
-            $response = array(
-                'success' => true,
-                'message' => 'Deleted successfully',
-                'data' => $post,
-            );
-
+        if ($post->isSuccess()) {
+            $response = [
+                'success' => $post->isSuccess(),
+                'message' => $post->getMessage(),
+                'data' => $post->getResult()
+            ];
             return response()->json($response, 200);
-        } else {
-            $response = array(
-                'success' => false,
-                'message' => 'Data not found',
-                'data' => null,
-            );
-
-            return response()->json($response, 404);
         }
+
+        $response = [
+            "success" => false,
+            "message" => $post->getMessage(),
+            "data" => null,
+            "errors" => $post->getErrors()
+        ];
+        return response()->json($response, 400);
+
     }
 }
