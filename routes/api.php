@@ -31,11 +31,10 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::apiResource('/posts', PostController::class, ['except' => ['update', 'destroy']])->parameter('posts', 'id');
     Route::apiResource('/posts', PostController::class, ['only' => ['update', 'destroy']])->parameter('posts', 'id')->middleware('post_owner');
 
+    Route::apiResource('/comments', CommentController::class, ['only' => ['store']])->parameter('comments', 'id');
     Route::apiResource('/comments', CommentController::class, ['only' => ['update', 'destroy']])->parameter('comments', 'id')->middleware('comment_owner');
 
     Route::apiResource('/users', UserController::class)->parameter('users', 'id');
 });
 Route::post('auth/register', [AuthenticationController::class, 'register']);
 Route::post('auth/login', [AuthenticationController::class, 'login']);
-
-Route::post('/comments', [CommentController::class, 'store']);

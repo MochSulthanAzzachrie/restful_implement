@@ -51,7 +51,7 @@ class User extends Authenticatable implements JWTSubject
 
     public static function getUsers()
     {
-        $users = self::all();
+        $users = self::paginate(5);
 
         return $users;
     }

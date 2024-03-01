@@ -42,7 +42,7 @@ class Post extends Model
 
     public static function getPosts()
     {
-        $posts = self::with('comments')->get();
+        $posts = self::with('comments')->paginate(5);
 
         return $posts;
     }

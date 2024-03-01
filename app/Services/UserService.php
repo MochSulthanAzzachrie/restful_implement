@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\Resources\UserResourceCollection;
 use App\Models\User;
 use App\Http\Operation\Operation;
 use App\Repositories\UserRepository;
@@ -15,9 +16,11 @@ class UserService
 
         $results = User::getUsers();
 
+        $usersCollection = new UserResourceCollection($results);
+
         $operation->setIsSuccess(true)
             ->setMessage('success get all user')
-            ->setResult($results);
+            ->setResult($usersCollection);
 
         return $operation;
     }

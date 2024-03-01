@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\DTO\Comment\CreateCommentDTO;
+use App\Http\DTO\Comment\UpdateCommentDTO;
 use App\Services\CommentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -15,21 +17,18 @@ class CommentController extends Controller
     // }
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'post_id' => 'required|exists:posts,id',
-            'comments_content' => 'required',
-        ]);
+        $dto = new CreateCommentDTO($request->all());
 
-        if ($validator->fails()) {
+        if (!$dto->isValid()) {
             return response()->json([
                 'success' => false,
                 'message' => 'failed, payload not suited',
                 'data' => null,
-                'errors' => $validator->errors(),
+                'errors' => $dto->getErrors(),
             ], 400);
         }
 
-        $operation = CommentService::createComment($validator->validated());
+        $operation = CommentService::createComment($dto->getData());
 
         if ($operation->isSuccess()) {
             $response = array(
@@ -52,20 +51,18 @@ class CommentController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'comments_content' => 'required',
-        ]);
+        $dto = new UpdateCommentDTO($request->all());
 
-        if ($validator->fails()) {
+        if (!$dto->isValid()) {
             return response()->json([
                 'success' => false,
                 'message' => 'failed, payload not suited',
                 'data' => null,
-                'errors' => $validator->errors(),
+                'errors' => $dto->getErrors(),
             ], 400);
         }
 
-        $operation = CommentService::updateComment($validator->validated(), $id);
+        $operation = CommentService::updateComment($dto->getData(), $id);
 
         if ($operation->isSuccess()) {
             $response = array(

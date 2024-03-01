@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\DTO\Post\CreatePostDTO;
+use App\Http\DTO\Post\UpdatePostDTO;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Services\PostService;
@@ -69,21 +71,18 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|max:225',
-            'novel_content' => 'required',
-        ]);
+        $dto = new CreatePostDTO($request->all());
 
-        if ($validator->fails()) {
+        if (!$dto->isValid()) {
             return response()->json([
                 'success' => false,
                 'message' => 'failed, payload not suited',
                 'data' => null,
-                'errors' => $validator->errors(),
+                'errors' => $dto->getErrors(),
             ], 400);
         }
 
-        $operation = PostService::createPost($validator->validated());
+        $operation = PostService::createPost($dto->getData());
 
         if ($operation->isSuccess()) {
             $response = [
@@ -106,21 +105,18 @@ class PostController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'nullable|max:225',
-            'novel_content' => 'nullable',
-        ]);
+        $dto = new UpdatePostDTO($request->all());
 
-        if ($validator->fails()) {
+        if (!$dto->isValid()) {
             return response()->json([
                 'success' => false,
                 'message' => 'failed, payload not suited',
                 'data' => null,
-                'errors' => $validator->errors(),
+                'errors' => $dto->getErrors(),
             ], 400);
         }
 
-        $operation = PostService::updatePost($validator->validated(), $id);
+        $operation = PostService::updatePost($dto->getData(), $id);
 
         if ($operation->isSuccess()) {
             $response = [

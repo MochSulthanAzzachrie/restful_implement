@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\DTO\User\CreateUserDTO;
+use App\Http\DTO\User\UpdateUserDTO;
 use Illuminate\Http\Request;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Validator;
@@ -61,24 +63,18 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required',
-            'username' => 'required|max:225',
-            'password' => 'required',
-            'firstname' => 'nullable',
-            'lastname' => 'nullable',
-        ]);
+        $dto = new CreateUserDTO($request->all());
 
-        if ($validator->fails()) {
+        if (!$dto->isValid()) {
             return response()->json([
                 'success' => false,
                 'message' => 'failed, payload not suited',
                 'data' => null,
-                'errors' => $validator->errors(),
+                'errors' => $dto->getErrors(),
             ], 400);
         }
 
-        $operation = UserService::createUser($validator->validated());
+        $operation = UserService::createUser($dto->getData());
 
         if ($operation->isSuccess()) {
             $response = [
@@ -101,24 +97,18 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'nullable',
-            'username' => 'nullable|max:225',
-            'password' => 'nullable',
-            'firstname' => 'nullable',
-            'lastname' => 'nullable',
-        ]);
+        $dto = new UpdateUserDTO($request->all());
 
-        if ($validator->fails()) {
+        if (!$dto->isValid()) {
             return response()->json([
                 'success' => false,
                 'message' => 'failed, payload not suited',
                 'data' => null,
-                'errors' => $validator->errors(),
+                'errors' => $dto->getErrors(),
             ], 400);
         }
 
-        $operation = UserService::updateUser($validator->validated(), $id);
+        $operation = UserService::updateUser($dto->getData(), $id);
 
         if ($operation->isSuccess()) {
             $response = [

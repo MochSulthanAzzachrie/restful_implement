@@ -4,25 +4,28 @@ namespace App\Services;
 
 use App\Models\Post;
 use App\Http\Operation\Operation;
+use App\Http\Resources\PostResourceCollection;
 use App\Repositories\PostRepository;
 
 class PostService
 {
-    public static function getPosts() : Operation
+    public static function getPosts(): Operation
     {
 
         $operation = new Operation();
 
         $results = Post::getPosts();
 
-        $operation->setIsSuccess(true)
+        $postsCollection = new PostResourceCollection($results);
+
+            $operation->setIsSuccess(true)
             ->setMessage('success get all post')
-            ->setResult($results);
+            ->setResult($postsCollection);
 
         return $operation;
     }
 
-    public static function getPostById($id) : Operation
+    public static function getPostById($id): Operation
     {
 
         $operation = new Operation();
@@ -42,10 +45,9 @@ class PostService
             ->setResult($result);
 
         return $operation;
-
     }
 
-    public static function createPost(array $data) : Operation
+    public static function createPost(array $data): Operation
     {
 
         $operation = new Operation();
@@ -57,10 +59,9 @@ class PostService
             ->setResult($result);
 
         return $operation;
-
     }
 
-    public static function updatePost(array $data, $id) : Operation
+    public static function updatePost(array $data, $id): Operation
     {
 
         $operation = new Operation();
@@ -78,10 +79,9 @@ class PostService
             ->setResult($result);
 
         return $operation;
-
     }
 
-    public static function deletePost($id) : Operation
+    public static function deletePost($id): Operation
     {
 
         $operation = new Operation();

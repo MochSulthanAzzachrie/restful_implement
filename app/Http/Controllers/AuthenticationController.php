@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\AuthService;
 use Exception;
 use Illuminate\Http\Request;
+use App\Services\AuthService;
+use App\Http\DTO\Auth\AuthLoginDTO;
+use App\Http\DTO\Auth\AuthRegisterDTO;
 use Illuminate\Support\Facades\Validator;
 
 class AuthenticationController extends Controller
@@ -22,24 +24,20 @@ class AuthenticationController extends Controller
 
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email|unique:users',
-            'username' => 'required|max:225',
-            'password' => 'required',
-            'firstname' => 'nullable',
-            'lastname' => 'nullable',
-        ]);
+        $dto = new AuthRegisterDTO($request->all());
 
-        if ($validator->fails()) {
-            return response()->json([
+        if (!$dto->isValid()) {
+            $response = array(
                 'success' => false,
                 'message' => 'failed, payload not suited',
                 'data' => null,
-                'errors' => $validator->errors(),
-            ], 400);
+                'errors' => $dto->GetErrors(),
+            );
+
+            return response()->json($response, 400);
         }
 
-        $operation = AuthService::authRegister($validator->validated());
+        $operation = AuthService::authRegister($dto->getData());
 
         if ($operation->isSuccess()) {
             $response = array(
@@ -68,22 +66,18 @@ class AuthenticationController extends Controller
      */
     public function login(Request $request)
     {
+        $dto = new AuthLoginDTO($request->all());
 
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-
-        if ($validator->fails()) {
+        if (!$dto->isValid()) {
             return response()->json([
                 'success' => false,
                 'message' => 'failed, payload not suited',
                 'data' => null,
-                'errors' => $validator->errors(),
+                'errors' => $dto->getErrors(),
             ], 400);
         }
 
-        $operation = AuthService::authLogin($validator->validated());
+        $operation = AuthService::authLogin($dto->getData());
 
         if ($operation->isSuccess()) {
             $response = array(
