@@ -27,14 +27,12 @@ class AuthenticationController extends Controller
         $dto = new AuthRegisterDTO($request->all());
 
         if (!$dto->isValid()) {
-            $response = array(
+            return response()->json([
                 'success' => false,
                 'message' => 'failed, payload not suited',
                 'data' => null,
-                'errors' => $dto->GetErrors(),
-            );
-
-            return response()->json($response, 400);
+                'errors' => $dto->getErrors(),
+            ], 400);
         }
 
         $operation = AuthService::authRegister($dto->getData());
