@@ -23,14 +23,19 @@ class AuthService
         return $operation;
     }
 
-    public static function authLogin() : Operation
+    public static function authLogin(array $data) : Operation
     {
 
         $operation = new Operation();
 
-        $credentials = request(['email', 'password']);
+        $credentials = [
+            'email' => $data['email'],
+            'password' => $data['password']
+        ];
 
-        if (!$token = auth()->attempt($credentials)) {
+        $token = auth()->attempt($credentials);
+
+        if (!$token) {
             $operation->setIsSuccess(false)
                 ->setMessage('Unauthorize, email or password not matched');
 

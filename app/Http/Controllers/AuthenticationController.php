@@ -66,9 +66,24 @@ class AuthenticationController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
+    public function login(Request $request)
     {
-        $operation = AuthService::authLogin();
+
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'failed, payload not suited',
+                'data' => null,
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        $operation = AuthService::authLogin($validator->validated());
 
         if ($operation->isSuccess()) {
             $response = array(
