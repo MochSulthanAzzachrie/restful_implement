@@ -2,19 +2,20 @@
 
 namespace App\Services;
 
-use App\Http\Resources\UserResourceCollection;
 use App\Models\User;
+use Illuminate\Http\Request;
 use App\Http\Operation\Operation;
 use App\Repositories\UserRepository;
+use App\Http\Resources\UserResourceCollection;
 
 class UserService
 {
-    public static function getUsers() : Operation
+    public static function getUsers($limit, $search) : Operation
     {
 
         $operation = new Operation();
 
-        $results = User::getUsers();
+        $results = User::getUsers($limit, $search);
 
         $usersCollection = new UserResourceCollection($results);
 

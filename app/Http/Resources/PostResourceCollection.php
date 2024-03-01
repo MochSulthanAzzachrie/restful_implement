@@ -21,8 +21,9 @@ class PostResourceCollection extends ResourceCollection
                     'title' => $post->title,
                     'novel_content' => $post->novel_content,
                     'created_at' => $post->created_at->format("Y-m-d H:i:s"),
-                    'author' => $post->user_id,
-                    'writer' => $post->writer,
+                    'author' => $post->users->username,
+                    // 'author' => $post->user_id,
+                    'writer' => $post->users,
                     'comments' => $post->comments,
                     'comments_total' => count($post->comments),
                 ];

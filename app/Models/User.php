@@ -49,11 +49,16 @@ class User extends Authenticatable implements JWTSubject
         'password' => 'hashed',
     ];
 
-    public static function getUsers()
+    public static function getUsers($limit, $search)
     {
-        $users = self::paginate(5);
+        $users = self::query();
 
-        return $users;
+        $users->where('email', 'like', '%' . $search . '%')
+        ->orWhere('username', 'like', '%' . $search . '%')
+        ->orWhere('firstname', 'like', '%' . $search . '%')
+        ->orWhere('lastname', 'like', '%' . $search . '%');
+
+        return $users->paginate($limit);
     }
 
     public static function getUserById($id)

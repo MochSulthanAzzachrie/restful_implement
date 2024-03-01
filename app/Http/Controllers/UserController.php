@@ -15,9 +15,13 @@ class UserController extends Controller
     // {
     //     $this->middleware('auth:api', ['except' => ['store']]);
     // }
-    public function index()
+    public function index(Request $request)
     {
-        $operation = UserService::getUsers();
+
+        $limit = $request->query('limit', '5');
+        $search = $request->query('search', '');
+
+        $operation = UserService::getUsers($limit, $search);
 
         if ($operation->isSuccess()) {
             $response = [
@@ -35,7 +39,6 @@ class UserController extends Controller
             "errors" => $operation->getErrors()
         ];
         return response()->json($response, 400);
-
     }
 
     public function show($id)
@@ -58,7 +61,6 @@ class UserController extends Controller
             "errors" => $operation->getErrors()
         ];
         return response()->json($response, 404);
-
     }
 
     public function store(Request $request)
@@ -92,7 +94,6 @@ class UserController extends Controller
             "errors" => $operation->getErrors()
         ];
         return response()->json($response, 400);
-
     }
 
     public function update(Request $request, $id)
@@ -126,7 +127,6 @@ class UserController extends Controller
             "errors" => $operation->getErrors()
         ];
         return response()->json($response, 404);
-
     }
 
     public function destroy($id)
@@ -149,6 +149,5 @@ class UserController extends Controller
             "errors" => $operation->getErrors()
         ];
         return response()->json($response, 404);
-
     }
 }

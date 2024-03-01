@@ -9,12 +9,12 @@ use App\Repositories\PostRepository;
 
 class PostService
 {
-    public static function getPosts(): Operation
+    public static function getPosts($limit, $search): Operation
     {
 
         $operation = new Operation();
 
-        $results = Post::getPosts();
+        $results = Post::getPosts($limit, $search);
 
         $postsCollection = new PostResourceCollection($results);
 

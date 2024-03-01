@@ -40,11 +40,16 @@ class Post extends Model
         return $this->hasMany(Comment::class, 'post_id', 'id');
     }
 
-    public static function getPosts()
+    public static function getPosts($limit, $search)
     {
-        $posts = self::with('comments')->paginate(5);
+        $posts = self::with('comments');
 
-        return $posts;
+        $posts->where('title', 'like', '%' . $search . '%')
+            ->orWhereHas('users', function ($query) use ($search) {
+                $query->where('username', 'like', '%' . $search . '%');
+            });
+
+        return $posts->paginate($limit);
     }
 
     public static function getPostById($id)

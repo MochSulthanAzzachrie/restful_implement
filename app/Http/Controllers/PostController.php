@@ -16,9 +16,13 @@ class PostController extends Controller
     //     $this->middleware('auth:api', ['except' => ['index', 'show']]);
     //     $this->middleware('post-owner')->only('update', 'destroy');
     // }
-    public function index()
+    public function index(Request $request)
     {
-        $operation = PostService::getPosts();
+
+        $limit = $request->query('limit', '5');
+        $search = $request->query('search', '');
+
+        $operation = PostService::getPosts($limit, $search);
 
         if ($operation->isSuccess()) {
             $response = [
