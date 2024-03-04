@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0559d74e3316f738f644cd3d224a15bc",
+    "content-hash": "a13649d36567938b467fec02b15eb52b",
     "packages": [
         {
             "name": "brick/math",
@@ -3324,6 +3324,29 @@
                 }
             ],
             "time": "2023-11-08T05:53:05+00:00"
+        },
+        {
+            "name": "skwn-media/query-param",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/SkwnMedia/QueryParam",
+                "reference": "36095e89e88ed1573096b537d8e148b8f1268077"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "QueryParam\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Laravel query parameter formater",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "stella-maris/clock",
@@ -8387,7 +8410,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "skwn-media/query-param": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

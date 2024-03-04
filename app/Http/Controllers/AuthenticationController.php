@@ -24,6 +24,9 @@ class AuthenticationController extends Controller
 
     public function register(Request $request)
     {
+
+        
+
         $dto = new AuthRegisterDTO($request->all());
 
         if (!$dto->isValid()) {

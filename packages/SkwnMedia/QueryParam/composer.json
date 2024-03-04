@@ -1,0 +1,12 @@
+{
+    "name": "skwn-media/query-param",
+    "description": "Laravel query parameter formater",
+    "license": "MIT",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "QueryParam\\": "src/"
+        }
+    },
+    "require": {}
+}

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Middleware\JwtMiddleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,7 +24,7 @@ use App\Http\Controllers\AuthenticationController;
 //     return $request->user();
 // });
 
-Route::group(['middleware' => 'api'], function ($router) {
+Route::middleware(JwtMiddleware::class)->group(function() {
     Route::post('auth/logout', [AuthenticationController::class, 'logout']);
     Route::post('auth/refresh', [AuthenticationController::class, 'refresh']);
     Route::post('auth/me', [AuthenticationController::class, 'me']);
