@@ -50,8 +50,6 @@ class AuthService
             'password' => $input['password'],
         ]);
 
-        // $token = auth()->attempt($credentials);
-
         if (!$token) {
             $operation->setIsSuccess(false)
                 ->setMessage('Unauthorize, email or password not matched');
