@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\DTO\Auth;
+namespace App\Http\DTO\User;
 
 use App\Http\DTO\MutationDTO;
 
-class AuthRegisterDTO extends MutationDTO
+class UserCreateMutationDTO extends MutationDTO
 {
     protected array $validatorRules = [
         'email' => 'required|email|unique:users',

@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\DTO\Post\CreatePostDTO;
+use App\Http\DTO\Post\PostMutationDTO;
+use App\Http\DTO\Post\PostQueryDTO;
 use App\Http\DTO\Post\UpdatePostDTO;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Services\PostService;
+use QueryParam\QueryParam;
 
 class PostController extends Controller
 {
@@ -19,10 +21,17 @@ class PostController extends Controller
     public function index(Request $request)
     {
 
-        $limit = $request->query('limit', '5');
-        $search = $request->query('search', '');
+        $config = [
+            "filter" => $request->query('filter'),
+            "sorter" => $request->query('sorter'),
+            "limit" => $request->query('limit', '5'),
+        ];
 
-        $operation = PostService::getPosts($limit, $search);
+        $queryParam = new QueryParam($config);
+
+        $postQueryDTO = new PostQueryDTO($queryParam);
+
+        $operation = PostService::getPosts($postQueryDTO);
 
         if ($operation->isSuccess()) {
             $response = [
@@ -40,12 +49,22 @@ class PostController extends Controller
             "errors" => $operation->getErrors()
         ];
         return response()->json($response, 400);
-
     }
 
-    public function show($id)
+    public function show(string $id)
     {
-        $operation = PostService::getPostById($id);
+
+        $config = [
+            'filter' => "id = $id",
+            'sorter' => null,
+            'limit' => '1'
+        ];
+
+        $queryParam = new QueryParam($config);
+
+        $postQueryDTO = new PostQueryDTO($queryParam);
+
+        $operation = PostService::getPostById($postQueryDTO);
 
         if ($operation->isSuccess()) {
             $response = [
@@ -63,7 +82,6 @@ class PostController extends Controller
             "errors" => $operation->getErrors()
         ];
         return response()->json($response, 404);
-
     }
 
     // public function show2($id)
@@ -75,18 +93,14 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
-        $dto = new CreatePostDTO($request->all());
+        $config = [
+            'id' => null,
+            'input' => $request->all()
+        ];
 
-        if (!$dto->isValid()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'failed, payload not suited',
-                'data' => null,
-                'errors' => $dto->getErrors(),
-            ], 400);
-        }
+        $postMutationDTO = new PostMutationDTO($config);
 
-        $operation = PostService::createPost($dto->getData());
+        $operation = PostService::createPost($postMutationDTO);
 
         if ($operation->isSuccess()) {
             $response = [
@@ -104,23 +118,18 @@ class PostController extends Controller
             "errors" => $operation->getErrors()
         ];
         return response()->json($response, 400);
-
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id)
     {
-        $dto = new UpdatePostDTO($request->all());
+        $config = [
+            'id' => $id,
+            'input' => $request->all()
+        ];
 
-        if (!$dto->isValid()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'failed, payload not suited',
-                'data' => null,
-                'errors' => $dto->getErrors(),
-            ], 400);
-        }
+        $postMutationDTO = new PostMutationDTO($config);
 
-        $operation = PostService::updatePost($dto->getData(), $id);
+        $operation = PostService::updatePost($postMutationDTO);
 
         if ($operation->isSuccess()) {
             $response = [
@@ -138,12 +147,18 @@ class PostController extends Controller
             "errors" => $operation->getErrors()
         ];
         return response()->json($response, 404);
-
     }
 
-    public function destroy($id)
+    public function destroy(string $id)
     {
-        $operation = PostService::deletePost($id);
+        $config = [
+            'id' => $id,
+            'input' => null
+        ];
+
+        $postMutationDTO = new PostMutationDTO($config);
+
+        $operation = PostService::deletePost($postMutationDTO);
 
         if ($operation->isSuccess()) {
             $response = [
@@ -161,6 +176,5 @@ class PostController extends Controller
             "errors" => $operation->getErrors()
         ];
         return response()->json($response, 404);
-
     }
 }

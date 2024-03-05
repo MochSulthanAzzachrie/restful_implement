@@ -5,17 +5,32 @@ namespace App\Services;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Operation\Operation;
+use App\Http\DTO\User\UserQueryDTO;
 use App\Repositories\UserRepository;
+use App\Http\DTO\User\UserCreateMutationDTO;
+use App\Http\DTO\User\UserUpdateMutationDTO;
 use App\Http\Resources\UserResourceCollection;
 
 class UserService
 {
-    public static function getUsers($limit, $search) : Operation
+    public static function getUsers(UserQueryDTO $userQueryDTO): Operation
     {
 
         $operation = new Operation();
 
-        $results = User::getUsers($limit, $search);
+        if (!$userQueryDTO->isValid()) {
+            $operation->setIsSuccess(false)
+                ->setMessage($userQueryDTO->getMessage())
+                ->setErrors($userQueryDTO->getErrors());
+            return $operation;
+        }
+
+        $results = User::getUsers(
+            $userQueryDTO->getFields(),
+            $userQueryDTO->getFilter(),
+            $userQueryDTO->getSorter(),
+            $userQueryDTO->getLimiter(),
+        );
 
         $usersCollection = new UserResourceCollection($results);
 
@@ -26,12 +41,21 @@ class UserService
         return $operation;
     }
 
-    public static function getUserById($id) : Operation
+    public static function getUserById(UserQueryDTO $userQueryDTO): Operation
     {
 
         $operation = new Operation();
+        if (!$userQueryDTO->isValid()) {
+            $operation->setIsSuccess(false)
+                ->setMessage($userQueryDTO->getMessage())
+                ->setErrors($userQueryDTO->getErrors());
+            return $operation;
+        }
 
-        $result = User::getUserById($id);
+        $result = User::getUserById(
+            $userQueryDTO->getFields(),
+            $userQueryDTO->getFilter(),
+        );
 
         if (!$result) {
 
@@ -48,12 +72,18 @@ class UserService
         return $operation;
     }
 
-    public static function createUser(array $data) : Operation
+    public static function createUser(UserCreateMutationDTO $userCreateMutationDTO): Operation
     {
 
         $operation = new Operation();
+        if (!$userCreateMutationDTO->isValid()) {
+            $operation->setIsSuccess(false)
+                ->setMessage($userCreateMutationDTO->getMessage())
+                ->setErrors($userCreateMutationDTO->getErrors());
+            return $operation;
+        }
 
-        $result = User::createUser($data);
+        $result = User::createUser($userCreateMutationDTO->getInput());
 
         $operation->setIsSuccess(true)
             ->setMessage('success create new user')
@@ -62,12 +92,21 @@ class UserService
         return $operation;
     }
 
-    public static function updateUser(array $data, $id) : Operation
+    public static function updateUser(UserUpdateMutationDTO $userUpdateMutationDTO): Operation
     {
 
         $operation = new Operation();
+        if (!$userUpdateMutationDTO->isValid()) {
+            $operation->setIsSuccess(false)
+                ->setMessage($userUpdateMutationDTO->getMessage())
+                ->setErrors($userUpdateMutationDTO->getErrors());
+            return $operation;
+        }
 
-        $result = User::updateUser($data, $id);
+        $result = User::updateUser(
+            $userUpdateMutationDTO->getInput(),
+            $userUpdateMutationDTO->getId(),
+        );
 
         if (!$result) {
             $operation->setIsSuccess(false)
@@ -82,12 +121,18 @@ class UserService
         return $operation;
     }
 
-    public static function deleteUser($id) : Operation
+    public static function deleteUser(UserCreateMutationDTO $userCreateMutationDTO): Operation
     {
 
         $operation = new Operation();
+        if (!$userCreateMutationDTO->isValid()) {
+            $operation->setIsSuccess(false)
+                ->setMessage($userCreateMutationDTO->getMessage())
+                ->setErrors($userCreateMutationDTO->getErrors());
+            return $operation;
+        }
 
-        $result = User::deleteUser($id);
+        $result = User::deleteUser($userCreateMutationDTO->getId());
 
         if (!$result) {
             $operation->setIsSuccess(false)
@@ -101,5 +146,4 @@ class UserService
 
         return $operation;
     }
-
 }

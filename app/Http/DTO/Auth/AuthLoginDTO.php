@@ -2,12 +2,12 @@
 
 namespace App\Http\DTO\Auth;
 
-use App\Http\DTO\BaseDTO;
+use App\Http\DTO\MutationDTO;
 
-class AuthLoginDTO extends BaseDTO
+class AuthLoginDTO extends MutationDTO
 {
-    protected $validationRules = [
+    protected array $validatorRules = [
         'email' => 'required|email',
-        'password' => 'required',
+        'password' => 'required|string|min:3',
     ];
 }

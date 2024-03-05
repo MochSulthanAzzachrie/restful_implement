@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use QueryParam\Params\Limiter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class Post extends Model
 {
@@ -19,6 +21,10 @@ class Post extends Model
         'title', 'novel_content', 'user_id',
         //  'image',
     ];
+    protected $casts = [
+        'id' => 'string',
+    ];
+
 
     /**
      * Get the writer that owns the Post
@@ -40,23 +46,70 @@ class Post extends Model
         return $this->hasMany(Comment::class, 'post_id', 'id');
     }
 
-    public static function getPosts($limit, $search)
+    public static function getPosts(array $fields, ?array $filters, $sorters, Limiter $limiter): LengthAwarePaginator
     {
-        $posts = self::with('comments');
+        $posts = self::query()->select($fields['posts']);
+        foreach ($fields as $entity => $entityFields) {
+            if ($entity != 'posts') {
+                $posts->with([
+                    $entity => function ($query) use ($entityFields) {
+                        $query->select($entityFields);
+                    }
+                ]);
+            }
+        }
 
-        $posts->where('title', 'like', '%' . $search . '%')
-            ->orWhereHas('users', function ($query) use ($search) {
-                $query->where('username', 'like', '%' . $search . '%');
-            });
+        if (is_array($filters)) {
+            foreach ($filters as $filter) {
+                if ($filter->condition == 'between')
+                    $posts->whereBetween($filter->field, $filter->values);
+                else if ($filter->condition == 'like')
+                    if ($filter->field == 'username') {
+                        $posts->orWhereHas('users', function ($query) use ($filter) {
+                            $query->where($filter->field, 'LIKE', '%' . $filter->values[0] . '%');
+                        });
+                    } else {
+                        $posts->where($filter->field, 'LIKE', '%' . $filter->values[0] . '%');
+                    }
+                else
+                    $posts->where($filter->field, $filter->condition, $filter->values[0]);
+            }
+        }
 
-        return $posts->paginate($limit);
+        if ($sorters) {
+            foreach ($sorters as $sorter) {
+                $posts->orderBy($sorter->field, $sorter->directive);
+            }
+        }
+
+        return $posts->paginate($limiter->limit);
     }
 
-    public static function getPostById($id)
+    public static function getPostById(array $fields, array $filters)
     {
-        $post = self::with('comments')->find($id);
+        $post = self::query()->select($fields['posts']);
+        foreach ($fields as $entity => $entityFields) {
+            if ($entity != 'posts') {
+                $post->with([
+                    $entity => function ($query) use ($entityFields) {
+                        $query->select($entityFields);
+                    }
+                ]);
+            }
+        }
 
-        return $post;
+        if (is_array($filters)) {
+            foreach ($filters as $filter) {
+                if ($filter->condition == 'between')
+                    $post->whereBetween($filter->field, $filter->values);
+                else if ($filter->condition == 'like')
+                    $post->where($filter->field, 'LIKE', '%' . $filter->values[0] . '%');
+                else
+                    $post->where($filter->field, $filter->condition, $filter->values[0]);
+            }
+        }
+
+        return $post->first();
     }
 
     public static function createPost(array $data)

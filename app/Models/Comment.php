@@ -17,6 +17,9 @@ class Comment extends Model
     protected $fillable = [
         'post_id', 'user_id', 'comments_content',
     ];
+    protected $casts = [
+        'id' => 'string',
+    ];
 
     /**
      * Get the commentator that owns the Comment
@@ -49,7 +52,7 @@ class Comment extends Model
 
     public static function deleteComment($id)
     {
-        $comment = self::findOrFail($id);
+        $comment = self::find($id);
         $comment->delete();
 
         return $comment;

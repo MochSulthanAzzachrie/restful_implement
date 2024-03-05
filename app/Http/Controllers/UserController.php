@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\DTO\User\CreateUserDTO;
 use App\Http\DTO\User\UpdateUserDTO;
+use App\Http\DTO\User\UserCreateMutationDTO;
+use App\Http\DTO\User\UserQueryDTO;
+use App\Http\DTO\User\UserUpdateMutationDTO;
 use Illuminate\Http\Request;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Validator;
+use QueryParam\QueryParam;
 
 class UserController extends Controller
 {
@@ -18,10 +22,17 @@ class UserController extends Controller
     public function index(Request $request)
     {
 
-        $limit = $request->query('limit', '5');
-        $search = $request->query('search', '');
+        $config = [
+            "filter" => $request->query('filter'),
+            "sorter" => $request->query('sorter'),
+            "limit" => $request->query('limit', '5'),
+        ];
 
-        $operation = UserService::getUsers($limit, $search);
+        $queryParam = new QueryParam($config);
+
+        $userQueryDTO = new UserQueryDTO($queryParam);
+
+        $operation = UserService::getUsers($userQueryDTO);
 
         if ($operation->isSuccess()) {
             $response = [
@@ -43,7 +54,18 @@ class UserController extends Controller
 
     public function show($id)
     {
-        $operation = UserService::getUserById($id);
+
+        $config = [
+            'filter' => "id = $id",
+            'sorter' => null,
+            'limit' => '1'
+        ];
+
+        $queryParam = new QueryParam($config);
+
+        $userQueryDTO = new UserQueryDTO($queryParam);
+
+        $operation = UserService::getUserById($userQueryDTO);
 
         if ($operation->isSuccess()) {
             $response = [
@@ -65,18 +87,14 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $dto = new CreateUserDTO($request->all());
+        $config = [
+            'id' => null,
+            'input' => $request->all()
+        ];
 
-        if (!$dto->isValid()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'failed, payload not suited',
-                'data' => null,
-                'errors' => $dto->getErrors(),
-            ], 400);
-        }
+        $userCreateMutationDTO = new UserCreateMutationDTO($config);
 
-        $operation = UserService::createUser($dto->getData());
+        $operation = UserService::createUser($userCreateMutationDTO);
 
         if ($operation->isSuccess()) {
             $response = [
@@ -98,18 +116,14 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        $dto = new UpdateUserDTO($request->all());
+        $config = [
+            'id' => $id,
+            'input' => $request->all()
+        ];
 
-        if (!$dto->isValid()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'failed, payload not suited',
-                'data' => null,
-                'errors' => $dto->getErrors(),
-            ], 400);
-        }
+        $userUpdateMutationDTO = new UserUpdateMutationDTO($config);
 
-        $operation = UserService::updateUser($dto->getData(), $id);
+        $operation = UserService::updateUser($userUpdateMutationDTO);
 
         if ($operation->isSuccess()) {
             $response = [
@@ -131,7 +145,14 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        $operation = UserService::deleteUser($id);
+        $config = [
+            'id' => $id,
+            'input' => null
+        ];
+
+        $userCreateMutationDTO = new UserCreateMutationDTO($config);
+
+        $operation = UserService::deleteUser($userCreateMutationDTO);
 
         if ($operation->isSuccess()) {
             $response = [

@@ -25,20 +25,23 @@ class AuthenticationController extends Controller
     public function register(Request $request)
     {
 
-        
+        $config = [
+            'id' => null,
+            'input' => $request->all(),
+        ];
 
-        $dto = new AuthRegisterDTO($request->all());
+        $dto = new AuthRegisterDTO($config);
 
-        if (!$dto->isValid()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'failed, payload not suited',
-                'data' => null,
-                'errors' => $dto->getErrors(),
-            ], 400);
-        }
+        // if (!$dto->isValid()) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'failed, payload not suited',
+        //         'data' => null,
+        //         'errors' => $dto->getErrors(),
+        //     ], 400);
+        // }
 
-        $operation = AuthService::authRegister($dto->getData());
+        $operation = AuthService::authRegister($dto);
 
         if ($operation->isSuccess()) {
             $response = array(
@@ -67,18 +70,24 @@ class AuthenticationController extends Controller
      */
     public function login(Request $request)
     {
-        $dto = new AuthLoginDTO($request->all());
 
-        if (!$dto->isValid()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'failed, payload not suited',
-                'data' => null,
-                'errors' => $dto->getErrors(),
-            ], 400);
-        }
+        $config = [
+            'id' => null,
+            'input' => $request->all(),
+        ];
 
-        $operation = AuthService::authLogin($dto->getData());
+        $dto = new AuthLoginDTO($config);
+
+        // if (!$dto->isValid()) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'failed, payload not suited',
+        //         'data' => null,
+        //         'errors' => $dto->getErrors(),
+        //     ], 400);
+        // }
+
+        $operation = AuthService::authLogin($dto);
 
         if ($operation->isSuccess()) {
             $response = array(

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\DTO\Comment\CommentCreateMutationDTO;
+use App\Http\DTO\Comment\CommentUpdateMutationDTO;
 use App\Http\DTO\Comment\CreateCommentDTO;
 use App\Http\DTO\Comment\UpdateCommentDTO;
 use App\Services\CommentService;
@@ -17,18 +19,14 @@ class CommentController extends Controller
     // }
     public function store(Request $request)
     {
-        $dto = new CreateCommentDTO($request->all());
+        $config = [
+            'id' => null,
+            'input' => $request->all()
+        ];
 
-        if (!$dto->isValid()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'failed, payload not suited',
-                'data' => null,
-                'errors' => $dto->getErrors(),
-            ], 400);
-        }
+        $commentCreateMutationDTO = new CommentCreateMutationDTO($config);
 
-        $operation = CommentService::createComment($dto->getData());
+        $operation = CommentService::createComment($commentCreateMutationDTO);
 
         if ($operation->isSuccess()) {
             $response = array(
@@ -49,20 +47,16 @@ class CommentController extends Controller
         return response()->json($response, 400);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id)
     {
-        $dto = new UpdateCommentDTO($request->all());
+        $config = [
+            'id' => $id,
+            'input' => $request->all()
+        ];
 
-        if (!$dto->isValid()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'failed, payload not suited',
-                'data' => null,
-                'errors' => $dto->getErrors(),
-            ], 400);
-        }
+        $commentUpdateMutationDTO = new CommentUpdateMutationDTO($config);
 
-        $operation = CommentService::updateComment($dto->getData(), $id);
+        $operation = CommentService::updateComment($commentUpdateMutationDTO);
 
         if ($operation->isSuccess()) {
             $response = array(
@@ -83,9 +77,16 @@ class CommentController extends Controller
         return response()->json($response, 404);
     }
 
-    public function destroy($id)
+    public function destroy(string $id)
     {
-        $operation = CommentService::deleteComment($id);
+        $config = [
+            'id' => $id,
+            'input' => null
+        ];
+
+        $commentCreateMutationDTO = new CommentCreateMutationDTO($config);
+
+        $operation = CommentService::deleteComment($commentCreateMutationDTO);
 
         if ($operation->isSuccess()) {
             $response = array(

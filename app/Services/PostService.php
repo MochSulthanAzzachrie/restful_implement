@@ -4,33 +4,56 @@ namespace App\Services;
 
 use App\Models\Post;
 use App\Http\Operation\Operation;
-use App\Http\Resources\PostResourceCollection;
+use App\Http\DTO\Post\PostQueryDTO;
 use App\Repositories\PostRepository;
+use App\Http\DTO\Post\PostMutationDTO;
+use App\Http\Resources\PostResourceCollection;
 
 class PostService
 {
-    public static function getPosts($limit, $search): Operation
+    public static function getPosts(PostQueryDTO $postQueryDTO): Operation
     {
 
         $operation = new Operation();
 
-        $results = Post::getPosts($limit, $search);
+        if (!$postQueryDTO->isValid()) {
+            $operation->setIsSuccess(false)
+                ->setMessage($postQueryDTO->getMessage())
+                ->setErrors($postQueryDTO->getErrors());
+            return $operation;
+        }
+
+        $results = Post::getPosts(
+            $postQueryDTO->getFields(),
+            $postQueryDTO->getFilter(),
+            $postQueryDTO->getSorter(),
+            $postQueryDTO->getLimiter(),
+        );
 
         $postsCollection = new PostResourceCollection($results);
 
-            $operation->setIsSuccess(true)
+        $operation->setIsSuccess(true)
             ->setMessage('success get all post')
             ->setResult($postsCollection);
 
         return $operation;
     }
 
-    public static function getPostById($id): Operation
+    public static function getPostById(PostQueryDTO $postQueryDTO): Operation
     {
 
         $operation = new Operation();
+        if (!$postQueryDTO->isValid()) {
+            $operation->setIsSuccess(false)
+                ->setMessage($postQueryDTO->getMessage())
+                ->setErrors($postQueryDTO->getErrors());
+            return $operation;
+        }
 
-        $result = Post::getPostById($id);
+        $result = Post::getPostById(
+            $postQueryDTO->getFields(),
+            $postQueryDTO->getFilter(),
+        );
 
         if (!$result) {
 
@@ -47,12 +70,18 @@ class PostService
         return $operation;
     }
 
-    public static function createPost(array $data): Operation
+    public static function createPost(PostMutationDTO $postMutationDTO): Operation
     {
 
         $operation = new Operation();
+        if (!$postMutationDTO->isValid()) {
+            $operation->setIsSuccess(false)
+                ->setMessage($postMutationDTO->getMessage())
+                ->setErrors($postMutationDTO->getErrors());
+            return $operation;
+        }
 
-        $result = Post::createPost($data);
+        $result = Post::createPost($postMutationDTO->getInput());
 
         $operation->setIsSuccess(true)
             ->setMessage('success create new post')
@@ -61,12 +90,21 @@ class PostService
         return $operation;
     }
 
-    public static function updatePost(array $data, $id): Operation
+    public static function updatePost(PostMutationDTO $postMutationDTO): Operation
     {
 
         $operation = new Operation();
+        if (!$postMutationDTO->isValid()) {
+            $operation->setIsSuccess(false)
+                ->setMessage($postMutationDTO->getMessage())
+                ->setErrors($postMutationDTO->getErrors());
+            return $operation;
+        }
 
-        $result = Post::updatePost($data, $id);
+        $result = Post::updatePost(
+            $postMutationDTO->getInput(),
+            $postMutationDTO->getId(),
+        );
 
         if (!$result) {
             $operation->setIsSuccess(false)
@@ -81,12 +119,18 @@ class PostService
         return $operation;
     }
 
-    public static function deletePost($id): Operation
+    public static function deletePost(PostMutationDTO $postMutationDTO): Operation
     {
 
         $operation = new Operation();
+        if (!$postMutationDTO->isValid()) {
+            $operation->setIsSuccess(false)
+                ->setMessage($postMutationDTO->getMessage())
+                ->setErrors($postMutationDTO->getErrors());
+            return $operation;
+        }
 
-        $result = Post::deletePost($id);
+        $result = Post::deletePost($postMutationDTO->getId());
 
         if (!$result) {
             $operation->setIsSuccess(false)

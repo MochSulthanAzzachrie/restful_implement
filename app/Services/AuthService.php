@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Http\DTO\Auth\AuthLoginDTO;
+use App\Http\DTO\Auth\AuthRegisterDTO;
 use App\Models\User;
 use App\Http\Operation\Operation;
 use App\Repositories\AuthRepository;
@@ -9,12 +11,19 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthService
 {
-    public static function authRegister(array $data) : Operation
+    public static function authRegister(AuthRegisterDTO $authRegisterDTO): Operation
     {
 
         $operation = new Operation();
 
-        $result = User::createUser($data);
+        if (!$authRegisterDTO->isValid()) {
+            $operation->setIsSuccess(false)
+                ->setErrors($authRegisterDTO->getErrors())
+                ->setMessage($authRegisterDTO->getMessage());
+            return $operation;
+        }
+
+        $result = User::createUser($authRegisterDTO->getInput());
 
         $operation->setIsSuccess(true)
             ->setMessage('success register')
@@ -23,17 +32,26 @@ class AuthService
         return $operation;
     }
 
-    public static function authLogin(array $data) : Operation
+    public static function authLogin(AuthLoginDTO $authLoginDTO): Operation
     {
 
         $operation = new Operation();
 
-        $credentials = [
-            'email' => $data['email'],
-            'password' => $data['password']
-        ];
+        if (!$authLoginDTO->isValid()) {
+            $operation->setIsSuccess(false)
+                ->setErrors($authLoginDTO->getErrors())
+                ->setMessage($authLoginDTO->getMessage());
+            return $operation;
+        }
 
-        $token = auth()->attempt($credentials);
+        $input = $authLoginDTO->getInput();
+
+        $token = auth()->attempt ([
+            'email' => $input['email'],
+            'password' => $input['password'],
+        ]);
+
+        // $token = auth()->attempt($credentials);
 
         if (!$token) {
             $operation->setIsSuccess(false)
@@ -49,7 +67,7 @@ class AuthService
         return $operation;
     }
 
-    public static function authMe() : Operation
+    public static function authMe(): Operation
     {
 
         $operation = new Operation();
@@ -63,7 +81,7 @@ class AuthService
         return $operation;
     }
 
-    public static function authLogout() : Operation
+    public static function authLogout(): Operation
     {
 
         $operation = new Operation();
@@ -77,7 +95,7 @@ class AuthService
         return $operation;
     }
 
-    public static function authRefresh() : Operation
+    public static function authRefresh(): Operation
     {
 
         $operation = new Operation();
