@@ -7,7 +7,6 @@ use App\Http\DTO\Auth\AuthRegisterDTO;
 use App\Models\User;
 use App\Http\Operation\Operation;
 use App\Repositories\AuthRepository;
-use Illuminate\Support\Facades\Hash;
 
 class AuthService
 {
@@ -26,7 +25,7 @@ class AuthService
         $result = User::createUser($authRegisterDTO->getInput());
 
         $operation->setIsSuccess(true)
-            ->setMessage('success register')
+            ->setMessage('Success register')
             ->setResult($result);
 
         return $operation;
@@ -61,7 +60,7 @@ class AuthService
         }
 
         $operation->setIsSuccess(true)
-            ->setMessage('success login')
+            ->setMessage('Success login')
             ->setResult($token);
 
         return $operation;
@@ -75,7 +74,7 @@ class AuthService
         $result = auth()->user();
 
         $operation->setIsSuccess(true)
-            ->setMessage('success get user')
+            ->setMessage('Success get user')
             ->setResult($result);
 
         return $operation;
@@ -89,7 +88,7 @@ class AuthService
         auth()->logout();
 
         $operation->setIsSuccess(true)
-            ->setMessage('success logout')
+            ->setMessage('Success logout')
             ->setResult(null);
 
         return $operation;
@@ -103,7 +102,7 @@ class AuthService
         $result = auth()->refresh();
 
         $operation->setIsSuccess(true)
-            ->setMessage('success get refresh token')
+            ->setMessage('Success get refresh token')
             ->setResult($result);
 
         return $operation;

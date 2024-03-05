@@ -35,7 +35,7 @@ class UserService
         $usersCollection = new UserResourceCollection($results);
 
         $operation->setIsSuccess(true)
-            ->setMessage('success get all user')
+            ->setMessage('Success get all user')
             ->setResult($usersCollection);
 
         return $operation;
@@ -60,13 +60,13 @@ class UserService
         if (!$result) {
 
             $operation->setIsSuccess(false)
-                ->setMessage('failed get user by id, user id not found');
+                ->setMessage('Failed get user by id, user id not found');
 
             return $operation;
         }
 
         $operation->setIsSuccess(true)
-            ->setMessage('success get user by id')
+            ->setMessage('Success get user by id')
             ->setResult($result);
 
         return $operation;
@@ -86,7 +86,7 @@ class UserService
         $result = User::createUser($userCreateMutationDTO->getInput());
 
         $operation->setIsSuccess(true)
-            ->setMessage('success create new user')
+            ->setMessage('Success create new user')
             ->setResult($result);
 
         return $operation;
@@ -110,12 +110,12 @@ class UserService
 
         if (!$result) {
             $operation->setIsSuccess(false)
-                ->setMessage('failed update user, user id not found');
+                ->setMessage('Failed update user, user id not found');
             return $operation;
         }
 
         $operation->setIsSuccess(true)
-            ->setMessage('success update user')
+            ->setMessage('Success update user')
             ->setResult($result);
 
         return $operation;
@@ -136,12 +136,12 @@ class UserService
 
         if (!$result) {
             $operation->setIsSuccess(false)
-                ->setMessage('failed delete user, user id not found');
+                ->setMessage('Failed delete user, user id not found');
             return $operation;
         }
 
         $operation->setIsSuccess(true)
-            ->setMessage('success delete user')
+            ->setMessage('Success delete user')
             ->setResult($result);
 
         return $operation;

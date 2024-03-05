@@ -33,7 +33,7 @@ class PostService
         $postsCollection = new PostResourceCollection($results);
 
         $operation->setIsSuccess(true)
-            ->setMessage('success get all post')
+            ->setMessage('Success get all post')
             ->setResult($postsCollection);
 
         return $operation;
@@ -58,13 +58,13 @@ class PostService
         if (!$result) {
 
             $operation->setIsSuccess(false)
-                ->setMessage('failed get comment by id, comment id not found');
+                ->setMessage('Failed get comment by id, comment id not found');
 
             return $operation;
         }
 
         $operation->setIsSuccess(true)
-            ->setMessage('success get post by id')
+            ->setMessage('Success get post by id')
             ->setResult($result);
 
         return $operation;
@@ -84,7 +84,7 @@ class PostService
         $result = Post::createPost($postMutationDTO->getInput());
 
         $operation->setIsSuccess(true)
-            ->setMessage('success create new post')
+            ->setMessage('Success create new post')
             ->setResult($result);
 
         return $operation;
@@ -108,12 +108,12 @@ class PostService
 
         if (!$result) {
             $operation->setIsSuccess(false)
-                ->setMessage('failed update post, post id not found');
+                ->setMessage('Failed update post, post id not found');
             return $operation;
         }
 
         $operation->setIsSuccess(true)
-            ->setMessage('success update post')
+            ->setMessage('Success update post')
             ->setResult($result);
 
         return $operation;
@@ -134,12 +134,12 @@ class PostService
 
         if (!$result) {
             $operation->setIsSuccess(false)
-                ->setMessage('failed delete post, post id not found');
+                ->setMessage('Failed delete post, post id not found');
             return $operation;
         }
 
         $operation->setIsSuccess(true)
-            ->setMessage('success delete post')
+            ->setMessage('Success delete post')
             ->setResult($result);
 
         return $operation;

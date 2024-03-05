@@ -4,19 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\DTO\Comment\CommentCreateMutationDTO;
 use App\Http\DTO\Comment\CommentUpdateMutationDTO;
-use App\Http\DTO\Comment\CreateCommentDTO;
-use App\Http\DTO\Comment\UpdateCommentDTO;
 use App\Services\CommentService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class CommentController extends Controller
 {
     //
-    // public function __construct()
-    // {
-    //     $this->middleware('comment-owner')->only('update', 'destroy');
-    // }
     public function store(Request $request)
     {
         $config = [
@@ -41,7 +34,7 @@ class CommentController extends Controller
             'success' => false,
             'message' => $operation->getMessage(),
             'data' => null,
-            'error' => $operation->getErrors(),
+            'errors' => $operation->getErrors(),
         );
 
         return response()->json($response, 400);
@@ -71,7 +64,7 @@ class CommentController extends Controller
             'success' => false,
             'message' => $operation->getMessage(),
             'data' => null,
-            'error' => $operation->getErrors(),
+            'errors' => $operation->getErrors(),
         );
 
         return response()->json($response, 404);
@@ -101,7 +94,7 @@ class CommentController extends Controller
             'success' => false,
             'message' => $operation->getMessage(),
             'data' => null,
-            'error' => $operation->getErrors(),
+            'errors' => $operation->getErrors(),
         );
 
         return response()->json($response, 404);

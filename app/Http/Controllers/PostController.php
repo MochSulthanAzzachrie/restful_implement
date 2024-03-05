@@ -4,20 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\DTO\Post\PostMutationDTO;
 use App\Http\DTO\Post\PostQueryDTO;
-use App\Http\DTO\Post\UpdatePostDTO;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Services\PostService;
 use QueryParam\QueryParam;
 
 class PostController extends Controller
 {
     //
-    // public function __construct()
-    // {
-    //     $this->middleware('auth:api', ['except' => ['index', 'show']]);
-    //     $this->middleware('post-owner')->only('update', 'destroy');
-    // }
     public function index(Request $request)
     {
 

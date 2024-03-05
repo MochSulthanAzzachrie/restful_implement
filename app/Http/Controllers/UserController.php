@@ -2,23 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\DTO\User\CreateUserDTO;
-use App\Http\DTO\User\UpdateUserDTO;
 use App\Http\DTO\User\UserCreateMutationDTO;
 use App\Http\DTO\User\UserQueryDTO;
 use App\Http\DTO\User\UserUpdateMutationDTO;
 use Illuminate\Http\Request;
 use App\Services\UserService;
-use Illuminate\Support\Facades\Validator;
 use QueryParam\QueryParam;
 
 class UserController extends Controller
 {
     //
-    // public function __construct()
-    // {
-    //     $this->middleware('auth:api', ['except' => ['store']]);
-    // }
     public function index(Request $request)
     {
 

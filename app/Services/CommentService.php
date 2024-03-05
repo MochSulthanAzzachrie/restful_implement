@@ -24,7 +24,7 @@ class CommentService
         $result = Comment::createComment($commentCreateMutationDTO->getInput());
 
         $operation->setIsSuccess(true)
-            ->setMessage('success create new comment')
+            ->setMessage('Success create new comment')
             ->setResult($result);
 
         return $operation;
@@ -49,13 +49,13 @@ class CommentService
         if (!$result) {
 
             $operation->setIsSuccess(false)
-                ->setMessage('failed update comment, comment id not found');
+                ->setMessage('Failed update comment, comment id not found');
 
             return $operation;
         }
 
         $operation->setIsSuccess(true)
-            ->setMessage('success update comment')
+            ->setMessage('Success update comment')
             ->setResult($result);
 
         return $operation;
@@ -77,13 +77,13 @@ class CommentService
         if (!$result) {
 
             $operation->setIsSuccess(false)
-                ->setMessage('failed delete comment, comment id not found');
+                ->setMessage('Failed delete comment, comment id not found');
 
             return $operation;
         }
 
         $operation->setIsSuccess(true)
-            ->setMessage('success delete comment')
+            ->setMessage('Success delete comment')
             ->setResult($result);
 
         return $operation;

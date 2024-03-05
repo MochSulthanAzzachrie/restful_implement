@@ -7,21 +7,10 @@ use Illuminate\Http\Request;
 use App\Services\AuthService;
 use App\Http\DTO\Auth\AuthLoginDTO;
 use App\Http\DTO\Auth\AuthRegisterDTO;
-use Illuminate\Support\Facades\Validator;
 
 class AuthenticationController extends Controller
 {
     //
-    /**
-     * Create a new AuthController instance.
-     *
-     * @return void
-     */
-    // public function __construct()
-    // {
-    //     $this->middleware('auth:api', ['except' => ['login', 'register']]);
-    // }
-
     public function register(Request $request)
     {
 
@@ -31,15 +20,6 @@ class AuthenticationController extends Controller
         ];
 
         $dto = new AuthRegisterDTO($config);
-
-        // if (!$dto->isValid()) {
-        //     return response()->json([
-        //         'success' => false,
-        //         'message' => 'failed, payload not suited',
-        //         'data' => null,
-        //         'errors' => $dto->getErrors(),
-        //     ], 400);
-        // }
 
         $operation = AuthService::authRegister($dto);
 
@@ -57,7 +37,7 @@ class AuthenticationController extends Controller
             'success' => false,
             'message' => $operation->getMessage(),
             'data' => null,
-            'error' => $operation->getErrors(),
+            'errors' => $operation->getErrors(),
         );
 
         return response()->json($response, 400);
@@ -77,15 +57,6 @@ class AuthenticationController extends Controller
         ];
 
         $dto = new AuthLoginDTO($config);
-
-        // if (!$dto->isValid()) {
-        //     return response()->json([
-        //         'success' => false,
-        //         'message' => 'failed, payload not suited',
-        //         'data' => null,
-        //         'errors' => $dto->getErrors(),
-        //     ], 400);
-        // }
 
         $operation = AuthService::authLogin($dto);
 
@@ -124,7 +95,7 @@ class AuthenticationController extends Controller
 
         $response = array(
             'success' => true,
-            'message' => 'Data successfully found',
+            'message' => 'Successfully found data',
             'data' => $operation->getResult(),
         );
 
