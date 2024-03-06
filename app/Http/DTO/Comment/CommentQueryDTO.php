@@ -7,22 +7,24 @@ use App\Http\DTO\QueryDTO;
 class CommentQueryDTO extends QueryDTO
 {
     protected array $fields = [
-        'comment' => array(
+        'comments' => array(
             'comments.id',
             'comments.post_id',
             'comments.user_id',
             'comments.comments_content'
         ),
-        'post' => array(
+        'posts' => array(
             'posts.id',
             'posts.title',
+            'posts.image',
             'posts.novel_content',
             'posts.user_id'
         ),
-        'user' => array(
+        'users' => array(
             'users.id',
             'users.email',
             'users.username',
+            'users.image',
             'users.password',
             'users.firstname',
             'users.lastname',

@@ -4,12 +4,13 @@ namespace App\Models;
 
 use QueryParam\Params\Limiter;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class Post extends Model
 {
@@ -18,8 +19,10 @@ class Post extends Model
     protected $table = 'posts';
     protected $primaryKey = 'id';
     protected $fillable = [
-        'title', 'novel_content', 'user_id',
-        //  'image',
+        'title',
+        'image',
+        'novel_content',
+        'user_id',
     ];
     protected $casts = [
         'id' => 'string',
@@ -112,7 +115,7 @@ class Post extends Model
         return $post->first();
     }
 
-    public static function createPost(array $data)
+    public static function createPost(array $data) : self
     {
 
         $data['user_id'] = Auth::user()->id;
@@ -121,19 +124,31 @@ class Post extends Model
         return $post;
     }
 
-    public static function updatePost(array $data, $id)
+    public static function updatePost(array $data, string $id)
     {
 
-        $post = self::find($id);
-        $post->update($data);
+        $post = self::where('id', $id)->first();
+
+        if ($post != null) {
+            $pathFile = $post->image;
+            if (file_exists($pathFile)) {
+                File::delete($pathFile);
+            }
+
+            $post->update($data);
+        }
 
         return $post;
     }
 
-    public static function deletePost($id)
+        public static function deletePost(string $id)
     {
-        $post = self::find($id);
-        $post->delete();
+        $post = self::where('id', $id)->first();
+
+        if ($post !== null) {
+            File::delete($post->image);
+            $post->delete();
+        }
 
         return $post;
     }

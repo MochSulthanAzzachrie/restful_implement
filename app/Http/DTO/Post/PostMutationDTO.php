@@ -8,6 +8,7 @@ class PostMutationDTO extends MutationDTO
 {
     protected array $validatorRules = [
         'title' => 'required|string|max:225',
+        'image' => 'required|string|ends_with:jpg,jpeg,png',
         'novel_content' => 'required|string',
     ];
 }

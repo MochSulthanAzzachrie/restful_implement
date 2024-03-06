@@ -10,6 +10,7 @@ class PostQueryDTO extends QueryDTO
         'posts' => array(
             'posts.id',
             'posts.title',
+            'posts.image',
             'posts.novel_content',
             'posts.user_id'
         ),
@@ -17,6 +18,7 @@ class PostQueryDTO extends QueryDTO
             'users.id',
             'users.email',
             'users.username',
+            'users.image',
             'users.password',
             'users.firstname',
             'users.lastname',

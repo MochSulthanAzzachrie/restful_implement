@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 use App\Http\Operation\Operation;
 use App\Http\DTO\User\UserQueryDTO;
 use App\Repositories\UserRepository;
@@ -21,7 +20,9 @@ class UserService
         if (!$userQueryDTO->isValid()) {
             $operation->setIsSuccess(false)
                 ->setMessage($userQueryDTO->getMessage())
+                ->setResult(null)
                 ->setErrors($userQueryDTO->getErrors());
+
             return $operation;
         }
 
@@ -48,7 +49,9 @@ class UserService
         if (!$userQueryDTO->isValid()) {
             $operation->setIsSuccess(false)
                 ->setMessage($userQueryDTO->getMessage())
+                ->setResult(null)
                 ->setErrors($userQueryDTO->getErrors());
+
             return $operation;
         }
 
@@ -79,7 +82,9 @@ class UserService
         if (!$userCreateMutationDTO->isValid()) {
             $operation->setIsSuccess(false)
                 ->setMessage($userCreateMutationDTO->getMessage())
+                ->setResult(null)
                 ->setErrors($userCreateMutationDTO->getErrors());
+
             return $operation;
         }
 
@@ -98,8 +103,10 @@ class UserService
         $operation = new Operation();
         if (!$userUpdateMutationDTO->isValid()) {
             $operation->setIsSuccess(false)
-                ->setMessage($userUpdateMutationDTO->getMessage())
+                ->setMessage('Failed to update user! Please check your input request.')
+                ->setResult(array())
                 ->setErrors($userUpdateMutationDTO->getErrors());
+
             return $operation;
         }
 
@@ -110,7 +117,9 @@ class UserService
 
         if (!$result) {
             $operation->setIsSuccess(false)
-                ->setMessage('Failed update user, user id not found');
+                ->setMessage('Failed update user, user id not found')
+                ->setResult(array());
+
             return $operation;
         }
 
@@ -128,7 +137,9 @@ class UserService
         if (!$userCreateMutationDTO->isValid()) {
             $operation->setIsSuccess(false)
                 ->setMessage($userCreateMutationDTO->getMessage())
+                ->setResult(null)
                 ->setErrors($userCreateMutationDTO->getErrors());
+
             return $operation;
         }
 
@@ -136,7 +147,9 @@ class UserService
 
         if (!$result) {
             $operation->setIsSuccess(false)
-                ->setMessage('Failed delete user, user id not found');
+                ->setMessage('Failed delete user, user id not found')
+                ->setResult($result);;
+
             return $operation;
         }
 

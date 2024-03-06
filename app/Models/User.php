@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use QueryParam\Params\Limiter;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\File;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -26,6 +27,7 @@ class User extends Authenticatable implements JWTSubject
     protected $fillable = [
         'email',
         'username',
+        'image',
         'password',
         'firstname',
         'lastname',
@@ -52,7 +54,7 @@ class User extends Authenticatable implements JWTSubject
         'id' => 'string',
     ];
 
-    public static function getUsers(array $fields, ?array $filters, $sorters, Limiter $limiter) : LengthAwarePaginator
+    public static function getUsers(array $fields, ?array $filters, $sorters, Limiter $limiter): LengthAwarePaginator
     {
         $users = self::query()->select($fields['users']);
         foreach ($fields as $entity => $entityFields) {
@@ -68,11 +70,11 @@ class User extends Authenticatable implements JWTSubject
         if (is_array($filters)) {
             foreach ($filters as $filter) {
                 if ($filter->condition == 'between')
-                $users->whereBetween($filter->field, $filter->values);
+                    $users->whereBetween($filter->field, $filter->values);
                 else if ($filter->condition == 'like')
-                $users->where($filter->field, 'LIKE', '%' . $filter->values[0] . '%');
+                    $users->where($filter->field, 'LIKE', '%' . $filter->values[0] . '%');
                 else
-                $users->where($filter->field, $filter->condition, $filter->values[0]);
+                    $users->where($filter->field, $filter->condition, $filter->values[0]);
             }
         }
 
@@ -81,11 +83,6 @@ class User extends Authenticatable implements JWTSubject
                 $users->orderBy($sorter->field, $sorter->directive);
             }
         }
-
-        // $users->where('email', 'like', '%' . $search . '%')
-        // ->orWhere('username', 'like', '%' . $search . '%')
-        // ->orWhere('firstname', 'like', '%' . $search . '%')
-        // ->orWhere('lastname', 'like', '%' . $search . '%');
 
         return $users->paginate($limiter->limit);
     }
@@ -117,7 +114,7 @@ class User extends Authenticatable implements JWTSubject
         return $user->first();
     }
 
-    public static function createUser(array $data)
+    public static function createUser(array $data): self
     {
 
         $user = self::create($data);
@@ -125,19 +122,31 @@ class User extends Authenticatable implements JWTSubject
         return $user;
     }
 
-    public static function updateUser(array $data, $id)
+    public static function updateUser(array $data, string $id)
     {
 
-        $user = self::find($id);
-        $user->update($data);
+        $user = self::where('id', $id)->first();
+
+        if ($user != null) {
+            $pathFile = $user->image;
+            if (file_exists($pathFile)) {
+                File::delete($pathFile);
+            }
+
+            $user->update($data);
+        }
 
         return $user;
     }
 
-    public static function deleteUser($id)
+    public static function deleteUser(string $id)
     {
-        $user = self::find($id);
-        $user->delete();
+        $user = self::where('id', $id)->first();
+
+        if ($user !== null) {
+            File::delete($user->image);
+            $user->delete();
+        }
 
         return $user;
     }

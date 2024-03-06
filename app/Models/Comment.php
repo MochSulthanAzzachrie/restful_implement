@@ -41,7 +41,7 @@ class Comment extends Model
         return $comment;
     }
 
-    public static function updateComment(array $data, $id)
+    public static function updateComment(array $data, string $id)
     {
 
         $comment = self::find($id);
@@ -50,7 +50,7 @@ class Comment extends Model
         return $comment;
     }
 
-    public static function deleteComment($id)
+    public static function deleteComment(string $id)
     {
         $comment = self::find($id);
         $comment->delete();

@@ -77,21 +77,36 @@ class PostController extends Controller
         return response()->json($response, 404);
     }
 
-    // public function show2($id)
-    // {
-    //     $operation = Post::findOrFail($id);
-    //     // return response()->json(['data' => $operation]);
-    //     return new PostDetailResource($post);
-    // }
-
     public function store(Request $request)
     {
-        $config = [
-            'id' => null,
-            'input' => $request->all()
-        ];
+        if (!$request->hasFile('image')) {
+            $response = [
+                "success" => false,
+                "message" => "Failed create new posts, file not upload",
+                "errors" => [
+                    "image" => ["The post image field is required."]
+                ],
+                "data" => null
+            ];
+            return response()->json($response, 400);
+        }
 
-        $postMutationDTO = new PostMutationDTO($config);
+        $requestData = $request->all();
+
+        $file = $request->file('image');
+        $filename = time() . $file->getClientOriginalName();
+
+        $path = 'uploads/post';
+        $file->move($path, $filename)->getPathname();
+
+        $requestData['image'] = "$path/$filename";
+
+        $postMutationConfig = array(
+            'id' => null,
+            'input' => $requestData
+        );
+
+        $postMutationDTO = new PostMutationDTO($postMutationConfig);
 
         $operation = PostService::createPost($postMutationDTO);
 
@@ -115,12 +130,35 @@ class PostController extends Controller
 
     public function update(Request $request, string $id)
     {
-        $config = [
-            'id' => $id,
-            'input' => $request->all()
-        ];
+        // if (!$request->hasFile('image')) {
+        //     $response = [
+        //         "success" => false,
+        //         "message" => "Failed update posts, file not upload",
+        //         "errors" => [
+        //             "image" => ["The post image field is required."]
+        //         ],
+        //         "data" => null
+        //     ];
+        //     return response()->json($response, 400);
+        // }
 
-        $postMutationDTO = new PostMutationDTO($config);
+        $requestData = $request->all();
+
+        $file = $request->file('image');
+
+        $filename = time() . $file->getClientOriginalName();
+
+        $path = 'uploads/post';
+        $file->move($path, $filename)->getPathname();
+
+        $requestData['image'] = "$path/$filename";
+
+        $postMutationConfig = array(
+            'id' => $id,
+            'input' => $requestData
+        );
+
+        $postMutationDTO = new PostMutationDTO($postMutationConfig);
 
         $operation = PostService::updatePost($postMutationDTO);
 
@@ -144,12 +182,12 @@ class PostController extends Controller
 
     public function destroy(string $id)
     {
-        $config = [
+        $postMutationConfig = array(
             'id' => $id,
             'input' => null
-        ];
+        );
 
-        $postMutationDTO = new PostMutationDTO($config);
+        $postMutationDTO = new PostMutationDTO($postMutationConfig);
 
         $operation = PostService::deletePost($postMutationDTO);
 

@@ -19,6 +19,7 @@ class PostResourceCollection extends ResourceCollection
                 return [
                     'id' => $post->id,
                     'title' => $post->title,
+                    'image' => $post->image,
                     'novel_content' => $post->novel_content,
                     'created_at' => $post->created_at ? $post->created_at->format("Y-m-d H:i:s") : null,
                     'author' => $post->users ? $post->users->username : null,

@@ -19,7 +19,9 @@ class PostService
         if (!$postQueryDTO->isValid()) {
             $operation->setIsSuccess(false)
                 ->setMessage($postQueryDTO->getMessage())
+                ->setResult(null)
                 ->setErrors($postQueryDTO->getErrors());
+
             return $operation;
         }
 
@@ -46,7 +48,9 @@ class PostService
         if (!$postQueryDTO->isValid()) {
             $operation->setIsSuccess(false)
                 ->setMessage($postQueryDTO->getMessage())
+                ->setResult(null)
                 ->setErrors($postQueryDTO->getErrors());
+
             return $operation;
         }
 
@@ -77,7 +81,9 @@ class PostService
         if (!$postMutationDTO->isValid()) {
             $operation->setIsSuccess(false)
                 ->setMessage($postMutationDTO->getMessage())
+                ->setResult(null)
                 ->setErrors($postMutationDTO->getErrors());
+
             return $operation;
         }
 
@@ -96,8 +102,10 @@ class PostService
         $operation = new Operation();
         if (!$postMutationDTO->isValid()) {
             $operation->setIsSuccess(false)
-                ->setMessage($postMutationDTO->getMessage())
+                ->setMessage('Failed to update post! Please check your input request.')
+                ->setResult(array())
                 ->setErrors($postMutationDTO->getErrors());
+
             return $operation;
         }
 
@@ -108,7 +116,9 @@ class PostService
 
         if (!$result) {
             $operation->setIsSuccess(false)
-                ->setMessage('Failed update post, post id not found');
+                ->setMessage('Failed update post, post id not found')
+                ->setResult(array());
+
             return $operation;
         }
 
@@ -126,7 +136,9 @@ class PostService
         if (!$postMutationDTO->isValid()) {
             $operation->setIsSuccess(false)
                 ->setMessage($postMutationDTO->getMessage())
+                ->setResult(null)
                 ->setErrors($postMutationDTO->getErrors());
+
             return $operation;
         }
 
@@ -134,7 +146,9 @@ class PostService
 
         if (!$result) {
             $operation->setIsSuccess(false)
-                ->setMessage('Failed delete post, post id not found');
+                ->setMessage('Failed delete post, post id not found')
+                ->setResult($result);
+
             return $operation;
         }
 

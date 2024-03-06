@@ -45,7 +45,7 @@ class UserController extends Controller
         return response()->json($response, 400);
     }
 
-    public function show($id)
+    public function show(string $id)
     {
 
         $config = [
@@ -80,12 +80,34 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $config = [
-            'id' => null,
-            'input' => $request->all()
-        ];
+        if (!$request->hasFile('image')) {
+            $response = [
+                "success" => false,
+                "message" => "Failed create new users, file not upload",
+                "errors" => [
+                    "image" => ["The post image field is required."]
+                ],
+                "data" => null
+            ];
+            return response()->json($response, 400);
+        }
 
-        $userCreateMutationDTO = new UserCreateMutationDTO($config);
+        $requestData = $request->all();
+
+        $file = $request->file('image');
+        $filename = time() . $file->getClientOriginalName();
+
+        $path = 'uploads/user';
+        $file->move($path, $filename)->getPathname();
+
+        $requestData['image'] = "$path/$filename";
+
+        $userMutationConfig = array(
+            'id' => null,
+            'input' => $requestData
+        );
+
+        $userCreateMutationDTO = new UserCreateMutationDTO($userMutationConfig);
 
         $operation = UserService::createUser($userCreateMutationDTO);
 
@@ -107,14 +129,36 @@ class UserController extends Controller
         return response()->json($response, 400);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id)
     {
-        $config = [
-            'id' => $id,
-            'input' => $request->all()
-        ];
+        if (!$request->hasFile('image')) {
+            $response = [
+                "success" => false,
+                "message" => "Failed update users, file not upload",
+                "errors" => [
+                    "image" => ["The post image field is required."]
+                ],
+                "data" => null
+            ];
+            return response()->json($response, 400);
+        }
 
-        $userUpdateMutationDTO = new UserUpdateMutationDTO($config);
+        $requestData = $request->all();
+
+        $file = $request->file('image');
+        $filename = time() . $file->getClientOriginalName();
+
+        $path = 'uploads/user';
+        $file->move($path, $filename)->getPathname();
+
+        $requestData['image'] = "$path/$filename";
+
+        $userMutationConfig = array(
+            'id' => $id,
+            'input' => $requestData
+        );
+
+        $userUpdateMutationDTO = new UserUpdateMutationDTO($userMutationConfig);
 
         $operation = UserService::updateUser($userUpdateMutationDTO);
 
@@ -136,14 +180,14 @@ class UserController extends Controller
         return response()->json($response, 404);
     }
 
-    public function destroy($id)
+    public function destroy(string $id)
     {
-        $config = [
+        $userMutationConfig = array(
             'id' => $id,
             'input' => null
-        ];
+        );
 
-        $userCreateMutationDTO = new UserCreateMutationDTO($config);
+        $userCreateMutationDTO = new UserCreateMutationDTO($userMutationConfig);
 
         $operation = UserService::deleteUser($userCreateMutationDTO);
 

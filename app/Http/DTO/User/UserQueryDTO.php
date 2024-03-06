@@ -11,6 +11,7 @@ class UserQueryDTO extends QueryDTO
             'users.id',
             'users.email',
             'users.username',
+            'users.image',
             'users.password',
             'users.firstname',
             'users.lastname',
